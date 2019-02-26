@@ -1,0 +1,12 @@
+<h1>{{name}}</h1>
+
+<button mat-raised-button color="primary" [matMenuTriggerFor]="menu">Menu</button>
+<mat-menu id="mainMenu" #menu="matMenu">
+    <button mat-menu-item routerLink="/">Home</button>
+    <button mat-menu-item routerLink="/menu">Menu</button>
+</mat-menu>
+
+<router-outlet></router-outlet>
+
+
+<button mat-raised-button>Test</button>
