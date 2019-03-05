@@ -19,8 +19,9 @@ import { FooterComponent } from "./shared/components/footer/footer.component";
 
 import "../styles/theme.scss";
 
+import { TextEditComponent} from './shared/components/textedit/textedit.component';
 @NgModule({
-  declarations: [AppComponent, HomeComponent, FooterComponent],
+    declarations: [AppComponent, HomeComponent, FooterComponent, TextEditComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
