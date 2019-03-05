@@ -2,9 +2,42 @@
 
 body {
     font-family: 'Roboto';
+    margin: 0;
 }
 
-#mainMenu {
-    display: block;
-    margin-bottom: 1em;
+.main-content-container {
+    margin: 20px;
+}
+
+.toolbar-spacer {
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+}
+
+.menu-toggle-action {
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 0.2em;
+    margin-right: 0.7em;
+}
+
+ul.main-menu {
+    width: 250px;
+    padding-left: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+
+    li.menu-entry{
+        cursor: pointer;
+        $text-height: 3em;
+        list-style: none;
+        margin: 0;
+        padding-left: 1em;
+        height: $text-height;
+        line-height: $text-height;
+    }
+}
+
+.toolbar-fill-remaining-space {
+    flex: 1 1 auto;
 }

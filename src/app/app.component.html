@@ -1,13 +1,29 @@
-<h1>{{name}}</h1>
+<mat-drawer-container class="main-container" autosize>
+    <mat-drawer #drawer class="main-sidenav" mode="side">
+        <ul class="main-menu">
+            <li class="menu-entry" routerLink="/">Home</li>
+            <li class="menu-entry" routerLink="/menu">Menu</li>
+        </ul>
+    </mat-drawer>
+    
+    <mat-toolbar color="primary">
+        <mat-icon (click)="drawer.toggle()" class="menu-toggle-action">menu</mat-icon>
+        <span>{{name}}</span>
+        <span class="toolbar-fill-remaining-space"></span>
+    </mat-toolbar>
 
-<button mat-raised-button color="primary" [matMenuTriggerFor]="menu">Menu</button>
-<mat-menu id="mainMenu" #menu="matMenu">
-    <button mat-menu-item routerLink="/">Home</button>
-    <button mat-menu-item routerLink="/menu">Menu</button>
-</mat-menu>
-<hr/>
-<router-outlet></router-outlet>
+    <div class="main-content-container">
+    
+        <!--
+            <button mat-raised-button color="primary" [matMenuTriggerFor]="menu">Menu</button>
+        <mat-menu id="mainMenu" #menu="matMenu">
+            <button mat-menu-item routerLink="/">Home</button>
+            <button mat-menu-item routerLink="/menu">Menu</button>
+        </mat-menu>
+        -->
+        <router-outlet></router-outlet>
 
-<hr/>
+    </div>
 
-<app-footer></app-footer>
+    <app-footer color="primary"></app-footer>
+</mat-drawer-container>

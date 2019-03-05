@@ -2,5 +2,28 @@
 
 footer {
     width: 100%;
+    min-height: 10em;
+
     background-color: $footer-color;
+    color: $footer-text-color;
+
+    a {
+        color: $footer-link-color;
+
+        &:visited {
+            color: $footer-link-visited-color;
+        }
+    }
+
+    div.inner {
+        display: grid;
+        padding: 30px;
+
+        grid-gap: 30px;
+        grid-template-columns: repeat(3, 1fr);
+
+        div.col{
+            grid-row: 1;
+        }
+    }
 }

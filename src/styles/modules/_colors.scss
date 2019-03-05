@@ -1,2 +1,8 @@
-$footer-text-color: #c0c0c0;
-$footer-color: #ff7043;
+
+$main-color: #607D8B;
+
+$footer-color: $main-color;
+$footer-text-color: #FFF;
+
+$footer-link-color: $footer-text-color;
+$footer-link-visited-color: $footer-text-color;

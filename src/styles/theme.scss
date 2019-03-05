@@ -1,4 +1,6 @@
 @import "~@angular/material/theming";
+@import "./modules/colors";
+
 @include mat-core();
 
 $my-app-primary: mat-palette($mat-blue-grey);
