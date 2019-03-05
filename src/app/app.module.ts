@@ -19,11 +19,13 @@ import { FooterComponent } from './shared/components/footer/footer.component';
 import { TextEditComponent} from './shared/components/textedit/textedit.component';
 import '../styles/theme.scss';
 
-import { QuillModule } from 'ngx-quill';
 import { AppRoutingModule } from "./app-routing.module";
+import { CustomTextareaComponent } from "./shared/components/textedit/components/customtextarea.component";
+import { QuillModule } from "ngx-quill";
 
 @NgModule({
-    declarations: [AppComponent, HomeComponent, FooterComponent, TextEditComponent],
+    declarations: [AppComponent, HomeComponent, FooterComponent, TextEditComponent,
+    CustomTextareaComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
