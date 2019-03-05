@@ -9,6 +9,7 @@ import {
   MatToolbarModule,
   MatSidenavModule,
   MatIconModule,
+  MatChipsModule,
 } from "@angular/material";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -31,7 +32,8 @@ import { TextEditComponent} from './shared/components/textedit/textedit.componen
     MatToolbarModule,
     MatCheckboxModule,
     MatIconModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
