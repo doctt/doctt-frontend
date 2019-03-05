@@ -10,11 +10,12 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './shared/components/home/home.component';
-
+import { TextEditComponent} from './shared/components/textedit/textedit.component';
 @NgModule({
     declarations: [
         AppComponent,
-        HomeComponent
+        HomeComponent,
+        TextEditComponent,
     ],
     imports: [
         BrowserAnimationsModule,
