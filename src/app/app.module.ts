@@ -10,15 +10,20 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './shared/components/home/home.component';
+import { FooterComponent } from './shared/components/footer/footer.component';
+
+import '../styles/theme.scss';
+
 
 @NgModule({
     declarations: [
         AppComponent,
-        HomeComponent
+        HomeComponent,
+        FooterComponent
     ],
     imports: [
         BrowserAnimationsModule,
-        //BrowserModule,
+        BrowserModule,
         AppRoutingModule,
         MatButtonModule, 
         MatMenuModule,

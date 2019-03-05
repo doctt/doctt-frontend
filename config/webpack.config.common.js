@@ -21,45 +21,8 @@ module.exports = {
         loader: "html-loader"
       },
       {
-        test: /\.(scss|sass)$/,
-        include: helpers.root("src", "styles"),
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              // you can specify a publicPath here
-              // by default it use publicPath in webpackOptions.output
-              publicPath: "../"
-            }
-          },
-          "css-loader"
-        ]
-      },
-      {
-          test: /\.(css)$/,
-          use: [
-              "style-loader",
-              "css-loader"
-          ]
-      },
-      {
-        test: /\.(scss|sass)$/,
-        use: [
-          "to-string-loader",
-          {
-            loader: "css-loader",
-            options: {
-              sourceMap: true
-            }
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true
-            }
-          }
-        ],
-        include: helpers.root("src", "app")
+        test: /\.(scss|sass|css)$/,
+        loaders: ['to-string-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,

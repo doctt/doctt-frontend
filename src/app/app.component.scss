@@ -1,5 +1,7 @@
-html{
-    background-color: #F00;
+@import "../styles/theme.scss";
+
+body {
+    font-family: 'Roboto';
 }
 
 #mainMenu {

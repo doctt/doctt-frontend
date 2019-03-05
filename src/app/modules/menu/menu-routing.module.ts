@@ -4,7 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { MenuComponent } from './components/menu/menu.component';
 
 const appRoutes: Routes = [
-    { path: '', component: MenuComponent }
+    { path: '', component: MenuComponent },
+    { path: 'a', component: MenuComponent }
 ];
 
 @NgModule({
