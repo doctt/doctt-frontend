@@ -11,11 +11,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './shared/components/home/home.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
-
+import { TextEditComponent} from './shared/components/textedit/textedit.component';
 import '../styles/theme.scss';
 
+import { QuillModule } from 'ngx-quill';
 
-import { TextEditComponent} from './shared/components/textedit/textedit.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -29,7 +29,8 @@ import { TextEditComponent} from './shared/components/textedit/textedit.componen
         AppRoutingModule,
         MatButtonModule, 
         MatMenuModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        QuillModule
     ],
     providers: [],
     bootstrap: [
