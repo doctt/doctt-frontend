@@ -1,19 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { QuillEditorComponent } from 'ngx-quill';
+import { Component, OnInit } from "@angular/core";
+import { QuillEditorComponent, QuillModules, QuillModule, Range } from "ngx-quill";
 
 @Component({
-    selector: 'custom-textarea',
-    templateUrl: './customtextarea.component.html',
-    styleUrls: ['./customtextarea.component.scss'],
+  selector: "custom-textarea",
+  templateUrl: "./customtextarea.component.html",
+  styleUrls: ["./customtextarea.component.scss"]
 })
+export class CustomTextareaComponent {
+  modules = {};
+    addBindingCreated(quill: any) {
+    quill.keyboard.addBinding(
+      {
+        key: "b"
+      },
+      (range : Range, context : any) => {
+        console.log("KEYBINDING B", range, context);
+        //return true;
+      }
+    );
+  }
 
-export class CustomTextareaComponent extends QuillEditorComponent implements OnInit {
-    ngOnInit(): void {
-        //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-        //Add 'implements OnInit' to the class.
-    }
-
-    doTest(): void {
-        console.log("Hello world");
-    }
+  doTest(): void {
+    console.log("Hello world");
+  }
 }

@@ -15,6 +15,7 @@
     "@angular/router": "~7.2.7",
     "@angular/upgrade": "~7.2.7",
     "@babel/core": "^7.3.4",
+    "@types/quill": "^2.0.2",
     "angular-router-loader": "^0.8.5",
     "angular2-template-loader": "^0.6.2",
     "awesome-typescript-loader": "^5.2.1",
