@@ -1,5 +1,20 @@
 import { Component, OnInit } from "@angular/core";
-import { QuillEditorComponent, QuillModules, QuillModule, Range } from "ngx-quill";
+import {
+  QuillEditorComponent,
+  QuillModules,
+  QuillModule,
+  Range
+} from "ngx-quill";
+
+import Quill from "quill";
+
+
+class SelectionChangedEvent {
+  public editor: Quill;
+  public range : Range;
+  public oldRange: Range;
+  public source: String;
+}
 
 @Component({
   selector: "custom-textarea",
@@ -8,16 +23,25 @@ import { QuillEditorComponent, QuillModules, QuillModule, Range } from "ngx-quil
 })
 export class CustomTextareaComponent {
   modules = {};
-    addBindingCreated(quill: any) {
+  addBindingCreated(quill: Quill) {
     quill.keyboard.addBinding(
       {
-        key: "b"
+        key: "ctrl+b"
       },
-      (range : Range, context : any) => {
-        console.log("KEYBINDING B", range, context);
+      (range: Range, context: any) => {
+        console.log("KEYBINDING CTRL + B", range, context);
         //return true;
       }
     );
+  }
+
+  selectionChanged(event: SelectionChangedEvent){
+    // Selection Changed Event
+    let quill = event.editor;
+    quill.formatText(event.range.index, event.range.length, {
+      'bold': true,
+      'background': '#F00'
+    }, 'api');
   }
 
   doTest(): void {
