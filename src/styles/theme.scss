@@ -1,6 +1,10 @@
 @import "~@angular/material/theming";
 @import "./modules/colors";
 
+@import "~froala-editor/css/froala_editor.pkgd.min.css";
+@import "~froala-editor/css/froala_style.min.css";
+@import "~font-awesome/css/font-awesome.css";
+
 @include mat-core();
 
 $my-app-primary: mat-palette($mat-blue-grey);

@@ -6,12 +6,12 @@ import {
   Range
 } from "ngx-quill";
 
+import TagBlot from "./quill-blots/TagBlot";
 import Quill from "quill";
-
 
 class SelectionChangedEvent {
   public editor: Quill;
-  public range : Range;
+  public range: Range;
   public oldRange: Range;
   public source: String;
 }
@@ -21,19 +21,16 @@ class SelectionChangedEvent {
   templateUrl: "./customtextarea.component.html",
   styleUrls: ["./customtextarea.component.scss"]
 })
-export class CustomTextareaComponent implements OnInit{
-  modules = {toolbar: [
-    ['test_custom'],        // Added custom toolbar
-]};
-
+export class CustomTextareaComponent implements OnInit {
+  modules = {
+    toolbar: [
+      ["tag"] // Added custom toolbar
+    ]
+  };
 
   ngOnInit() {
-    const BlockEmbed = Quill.import('blots/block/embed');
-    BlockEmbed.blotName = 'test_custom_b';
-    BlockEmbed.tagName = 'span';
-    Quill.register(BlockEmbed);
+    Quill.register(TagBlot);
   }
-
 
   addBindingCreated(quill: Quill) {
     quill.keyboard.addBinding(
@@ -47,13 +44,13 @@ export class CustomTextareaComponent implements OnInit{
     );
   }
 
-  selectionChanged(event: SelectionChangedEvent){
+  selectionChanged(event: SelectionChangedEvent) {
     // Selection Changed Event
     let quill = event.editor;
-    quill.formatText(event.range.index, event.range.length, {
+    /*quill.formatText(event.range.index, event.range.length, {
       'bold': true,
       'background': '#F00'
-    }, 'api');
+    }, 'api');*/
   }
 
   doTest(): void {

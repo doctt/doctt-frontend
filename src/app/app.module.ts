@@ -22,6 +22,7 @@ import '../styles/theme.scss';
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomTextareaComponent } from "./shared/components/textedit/components/customtextarea.component";
 import { QuillModule } from "ngx-quill";
+import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, FooterComponent, TextEditComponent,
