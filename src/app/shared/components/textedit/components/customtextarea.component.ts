@@ -21,8 +21,20 @@ class SelectionChangedEvent {
   templateUrl: "./customtextarea.component.html",
   styleUrls: ["./customtextarea.component.scss"]
 })
-export class CustomTextareaComponent {
-  modules = {};
+export class CustomTextareaComponent implements OnInit{
+  modules = {toolbar: [
+    ['test_custom'],        // Added custom toolbar
+]};
+
+
+  ngOnInit() {
+    const BlockEmbed = Quill.import('blots/block/embed');
+    BlockEmbed.blotName = 'test_custom_b';
+    BlockEmbed.tagName = 'span';
+    Quill.register(BlockEmbed);
+  }
+
+
   addBindingCreated(quill: Quill) {
     quill.keyboard.addBinding(
       {
