@@ -1,20 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import {
-  QuillEditorComponent,
-  QuillModules,
-  QuillModule,
-  Range
-} from "ngx-quill";
-
-import TagBlot from "./quill-blots/TagBlot";
-import Quill from "quill";
-
-class SelectionChangedEvent {
-  public editor: Quill;
-  public range: Range;
-  public oldRange: Range;
-  public source: String;
-}
+import { Component, OnInit, HostListener, ViewChild, ElementRef } from "@angular/core";
+import { TagService } from "../../../../services/tag/TagService";
+import { MatChip, MatChipBase } from "@angular/material";
 
 @Component({
   selector: "custom-textarea",
@@ -22,38 +8,16 @@ class SelectionChangedEvent {
   styleUrls: ["./customtextarea.component.scss"]
 })
 export class CustomTextareaComponent implements OnInit {
-  modules = {
-    toolbar: [
-      ["tag"] // Added custom toolbar
-    ]
-  };
+  @ViewChild("editor") editor: ElementRef;
+	constructor(private tagService: TagService) {}
 
-  ngOnInit() {
-    Quill.register(TagBlot);
-  }
+  ngOnInit() {}
 
-  addBindingCreated(quill: Quill) {
-    quill.keyboard.addBinding(
-      {
-        key: "ctrl+b"
-      },
-      (range: Range, context: any) => {
-        console.log("KEYBINDING CTRL + B", range, context);
-        //return true;
-      }
-    );
-  }
-
-  selectionChanged(event: SelectionChangedEvent) {
-    // Selection Changed Event
-    let quill = event.editor;
-    /*quill.formatText(event.range.index, event.range.length, {
-      'bold': true,
-      'background': '#F00'
-    }, 'api');*/
-  }
-
-  doTest(): void {
-    console.log("Hello world");
+	@HostListener("document:selectionchange", ["$event.target"]) 
+	selectionChanged(event: Event) {
+		let sel = document.getSelection();
+		if (this.editor.nativeElement.contains(sel.anchorNode)){
+			console.log(sel);
+		}
   }
 }

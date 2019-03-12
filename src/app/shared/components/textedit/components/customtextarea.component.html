@@ -1,7 +1,32 @@
-<quill-editor #editor [modules]="modules" (onEditorCreated)="addBindingCreated($event)"
-(onSelectionChanged)="selectionChanged($event)"
->
-    <mat-chip>Test</mat-chip>
-</quill-editor>
+<div #editor class="editor" contenteditable="true">
+  <p>
+    <mat-chip color="accent" selected>Morgan Stanley Technology Media</mat-chip>
+    and
+    <mat-chip color="accent" selected>Telecom Conference Dave O'Hara</mat-chip>
+  </p>
+  <p></p>
+  <p>
+    Who: <mat-chip color="warn" selected>Dave O’Hara</mat-chip>,
+    <mat-chip color="warn" selected>CVP</mat-chip>,
+    <mat-chip color="warn" selected>Cloud and Enterprise</mat-chip>,
+    <mat-chip color="warn" selected>Office</mat-chip>,
+    <mat-chip color="warn" selected>Dynamics</mat-chip>,
+    <mat-chip color="warn" selected>Artificial Intelligence and Research</mat-chip>,
+    <mat-chip color="warn" selected>CFO</mat-chip>
+  </p>
+  <p></p>
+  <p>What: Morgan Stanley Technology, Media &amp; Telecom Conference</p>
+  <p></p>
+  <p>When: Monday, February 25, 2019</p>
+  <p></p>
+  <p>
+    <span sentence highlightColor="orange">KEITH WEISS</span>: I just want to
+    thank everyone for joining us today and thank you to Dave O'Hara from
+    Microsoft for joining us.
+  </p>
+</div>
 
-<mat-chip>Heey</mat-chip>
+<mat-chip-list>
+  <mat-chip color="accent" selected>Company-El</mat-chip>
+  <mat-chip color="warn" selected>Who-El</mat-chip>
+</mat-chip-list>
