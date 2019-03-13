@@ -1,4 +1,4 @@
-<div #editor class="editor" contenteditable="true">
+<div #editorInner class="editor" contenteditable="true">
   <p>
     <mat-chip color="accent" selected>Morgan Stanley Technology Media</mat-chip>
     and
@@ -27,6 +27,6 @@
 </div>
 
 <mat-chip-list>
-  <mat-chip color="accent" selected>Company-El</mat-chip>
-  <mat-chip color="warn" selected>Who-El</mat-chip>
+  <mat-chip color="accent" selected (click)="this.select(1)">Company-El</mat-chip>
+  <mat-chip color="warn" selected (click)="this.select(2)">Who-El</mat-chip>
 </mat-chip-list>
