@@ -17,6 +17,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './shared/components/home/home.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { TextEditComponent} from './shared/components/textedit/textedit.component';
+import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.component";
 import '../styles/theme.scss';
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -26,7 +27,7 @@ import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, FooterComponent, TextEditComponent,
-    CustomTextareaComponent],
+    CustomTextareaComponent, XmlUploadComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
