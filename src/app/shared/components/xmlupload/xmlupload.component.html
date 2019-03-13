@@ -1,4 +1,7 @@
 <div class="xml">
-    <input type="file" id="xml-file" accept=".xml" (click)="load(this.files)"><br><br>
-    <button class="xml-load">Load</button>
+    <input #xmlfile type="file" accept=".xml"><br><br>
+    <button class="xml-load" (click)="load(xmlfile.files)" >Load</button>
+    <div class="container">
+        
+    </div>
 </div>

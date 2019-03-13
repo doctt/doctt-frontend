@@ -1,5 +1,7 @@
 import { Component } from "@angular/core";
 
+let debug = 0;
+
 interface FileInfo{
     version : String,
     encoding : String    
@@ -41,9 +43,22 @@ interface File{
 export class XmlUploadComponent {
     
     ngOnInit(): void {
+
     }
 
-    load(file : FileList){
-        console.log(file[0]);
+    load(files : FileList){
+        let fileReader = new FileReader();
+        fileReader.readAsText(files[0]);
+
+        fileReader.onloadend = (e) => {
+            if(debug){
+                console.log(e);    
+                console.log(fileReader.readyState)
+                console.log(fileReader.result.toString())
+                document.querySelector(".container").innerHTML = fileReader.result.toString();
+            }
+            
+
+        }
     }
 }
