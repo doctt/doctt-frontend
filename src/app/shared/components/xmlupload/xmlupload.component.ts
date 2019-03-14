@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { HtmlParser } from "@angular/compiler";
 import { parse } from "url";
 
+//Debug flag
 let debug = 0;
 
 interface Header {
