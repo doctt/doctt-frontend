@@ -23,6 +23,7 @@ import { CustomTextareaComponent } from "./shared/components/textedit/components
 import { PortalModule } from "@angular/cdk/portal";
 import { MatChipFactory } from "./shared/components/matchipfactory/matchipfactory.component";
 import { SentenceDirective } from "./directives/sentence/sentence.directive";
+import { TagComponent } from "./shared/components/tag/tag.component";
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { SentenceDirective } from "./directives/sentence/sentence.directive";
     CustomTextareaComponent,
     MatChipFactory,
     SentenceDirective,
+    TagComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -50,7 +52,7 @@ import { SentenceDirective } from "./directives/sentence/sentence.directive";
   providers: [],
   bootstrap: [AppComponent],
   entryComponents: [
-    MatChipFactory
+    TagComponent
   ]
 })
 export class AppModule {}
