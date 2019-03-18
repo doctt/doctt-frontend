@@ -1,12 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
-    selector: 'doctt-tag',
-    templateUrl: './tag.component.html',
-    styleUrls: ['./tag.component.scss']
+  selector: "doctt-tag",
+  templateUrl: "./tag.component.html",
+  styleUrls: ["./tag.component.scss"]
 })
 export class TagComponent implements OnInit {
-    constructor() { }
+  private element: HTMLElement;
+  @ViewChild("content") content: ElementRef;
 
-    ngOnInit(): void { }
+  constructor() {
+    console.log("Creating component");
+  }
+
+  ngOnInit(): void {}
+
+  setContent(element: HTMLElement) {
+      let nativeElement : HTMLElement = this.content.nativeElement;
+      nativeElement.appendChild(element);
+  }
 }
