@@ -13,7 +13,9 @@
             "dom"
         ],
         "paths": {
-            "Models*": ["src/app/models/*"]
+          "*": ["types/*"],
+            "Models/*": ["src/app/models/*"],
+            "Services/*": ["src/app/services/*"]
         },
         "baseUrl": "./",
         "typeRoots": [

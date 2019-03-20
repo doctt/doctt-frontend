@@ -14,7 +14,8 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".js"],
     alias: {
-      Models: helpers.root("src/app/models")
+      Models: helpers.root("src/app/models"),
+      Services: helpers.root("src/app/services")
     }
   },
 

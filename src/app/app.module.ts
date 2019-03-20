@@ -10,7 +10,8 @@ import {
   MatSidenavModule,
   MatIconModule,
   MatChipsModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatTreeModule
 } from "@angular/material";
 
 import { AppComponent } from "./app.component";
@@ -26,6 +27,8 @@ import { MatChipFactory } from "./shared/components/matchipfactory/matchipfactor
 import { SentenceDirective } from "./directives/sentence/sentence.directive";
 import { TagComponent } from "./shared/components/tag/tag.component";
 import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.component";
+import { TreeComponent } from "./shared/components/tree/tree.component";
+import { DocumentUploadComponent } from "./shared/components/documentupload/documentupload.component";
 
 @NgModule({
   declarations: [
@@ -37,7 +40,9 @@ import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.comp
     MatChipFactory,
     SentenceDirective,
     TagComponent,
-    XmlUploadComponent
+    XmlUploadComponent,
+    TreeComponent,
+    DocumentUploadComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -50,13 +55,12 @@ import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.comp
     MatIconModule,
     MatProgressBarModule,
     MatSidenavModule,
+    MatTreeModule,
     MatChipsModule,
     PortalModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [
-    TagComponent
-  ]
+  entryComponents: [TagComponent]
 })
 export class AppModule {}

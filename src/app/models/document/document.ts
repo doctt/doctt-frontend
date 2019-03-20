@@ -19,8 +19,8 @@ interface Document {
 }
 
 class File {
-    private version: number;
-    private data: Document;
+    public version: number;
+    public data: Document;
 
     constructor(version: number, data: Document){
         this.version = version;
