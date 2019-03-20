@@ -9,25 +9,35 @@ import {
   MatToolbarModule,
   MatSidenavModule,
   MatIconModule,
-  MatChipsModule,
+  MatChipsModule
 } from "@angular/material";
 
-
-import { AppComponent } from './app.component';
-import { HomeComponent } from './shared/components/home/home.component';
-import { FooterComponent } from './shared/components/footer/footer.component';
-import { TextEditComponent} from './shared/components/textedit/textedit.component';
-import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.component";
-import '../styles/theme.scss';
+import { AppComponent } from "./app.component";
+import { HomeComponent } from "./shared/components/home/home.component";
+import { FooterComponent } from "./shared/components/footer/footer.component";
+import { TextEditComponent } from "./shared/components/textedit/textedit.component";
+import "../styles/theme.scss";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomTextareaComponent } from "./shared/components/textedit/components/customtextarea.component";
-import { QuillModule } from "ngx-quill";
-import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
+import { PortalModule } from "@angular/cdk/portal";
+import { MatChipFactory } from "./shared/components/matchipfactory/matchipfactory.component";
+import { SentenceDirective } from "./directives/sentence/sentence.directive";
+import { TagComponent } from "./shared/components/tag/tag.component";
+import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.component";
 
 @NgModule({
-    declarations: [AppComponent, HomeComponent, FooterComponent, TextEditComponent,
-    CustomTextareaComponent, XmlUploadComponent],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    FooterComponent,
+    TextEditComponent,
+    CustomTextareaComponent,
+    MatChipFactory,
+    SentenceDirective,
+    TagComponent,
+    XmlUploadComponent
+  ],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
@@ -39,9 +49,12 @@ import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
     MatIconModule,
     MatSidenavModule,
     MatChipsModule,
-    QuillModule
+    PortalModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    TagComponent
+  ]
 })
 export class AppModule {}

@@ -2,9 +2,6 @@ import { Component } from "@angular/core";
 import { HtmlParser } from "@angular/compiler";
 import { parse } from "url";
 
-//Debug flag
-let debug = 0;
-
 interface Header {
   textfile: string;
   lang: string;
@@ -50,6 +47,7 @@ function createSegment(features: string[], id: number, state: string) {
   styleUrls: ["./xmlupload.component.scss"]
 })
 export class XmlUploadComponent {
+  private debug : boolean = true;
   ngOnInit(): void {}
 
   load(files: FileList) {
@@ -57,7 +55,7 @@ export class XmlUploadComponent {
     fileReader.readAsText(files[0]);
 
     fileReader.onloadend = e => {
-      if (debug) {
+      if (this.debug) {
         console.log(e);
         console.log(fileReader.readyState);
         console.log(fileReader.result.toString());
@@ -81,7 +79,7 @@ export class XmlUploadComponent {
         }
       );
     
-      if(debug){
+      if(this.debug){
         console.log(segmentsArray[0].textContent.split('\n'));
         console.log(segmentsArray);
       }
@@ -100,7 +98,7 @@ export class XmlUploadComponent {
         ));
       }
 
-      if(debug){
+      if(this.debug){
         for(let i in segs){
           console.log(i, "\t ",  segs[i].features);
         }

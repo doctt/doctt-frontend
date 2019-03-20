@@ -1,0 +1,8 @@
+div.tag {
+    display: inline-block;
+    $radius: 5px;
+    border-radius: $radius $radius $radius $radius; 
+    padding: $radius;
+    margin: $radius;
+    color: white;
+}
