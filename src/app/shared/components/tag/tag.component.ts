@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 
 @Component({
   selector: "doctt-tag",
@@ -7,16 +7,29 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 })
 export class TagComponent implements OnInit {
   private element: HTMLElement;
-  @ViewChild("content") content: ElementRef;
+  @ViewChild("tag") tag : ElementRef | undefined;
+  @ViewChild("tagInner") content: ElementRef | undefined;
+
+  private colors: Array<string> = ["1E88E5", "8E24AA", "D81B60"];
 
   constructor() {
-    console.log("Creating component");
+    
   }
 
-  ngOnInit(): void {}
+  randomColor(): string {
+    return this.colors[
+      Math.ceil(Math.random() * this.colors.length) % this.colors.length
+    ];
+  }
 
-  setContent(element: HTMLElement) {
-      let nativeElement : HTMLElement = this.content.nativeElement;
+  ngOnInit(): void {
+    this.tag.nativeElement.style.backgroundColor = "#" + this.randomColor();
+  }
+
+  setContent(element: Node) {
+    if (this.content != undefined) {
+      let nativeElement: HTMLElement = this.content.nativeElement;
       nativeElement.appendChild(element);
+    }
   }
 }
