@@ -14,9 +14,9 @@ export class XmlExportComponent {
 
  export(){
    console.log(this.text);
-   var blob = new Blob([this.text], {type: "text/plain;charset=utf-8"});
-   this.FileSaver.saveAs(blob, "filename.txt");
-   
+   var blob = new Blob([this.text], {type: "text/xml;charset=utf-8"});
+   this.FileSaver.saveAs(blob, "filename.xml");
+
  }
 
  updateText(){
