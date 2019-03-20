@@ -7,14 +7,12 @@ import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 })
 export class TagComponent implements OnInit {
   private element: HTMLElement;
-  @ViewChild("tag") tag : ElementRef | undefined;
+  @ViewChild("tag") tag: ElementRef | undefined;
   @ViewChild("tagInner") content: ElementRef | undefined;
 
-  private colors: Array<string> = ["1E88E5", "8E24AA", "D81B60"];
+  private colors: Array<string> = ["D81B60", "FB8C00"];
 
-  constructor() {
-    
-  }
+  constructor() {}
 
   randomColor(): string {
     return this.colors[
@@ -22,14 +20,16 @@ export class TagComponent implements OnInit {
     ];
   }
 
-  ngOnInit(): void {
-    this.tag.nativeElement.style.backgroundColor = "#" + this.randomColor();
-  }
+  ngOnInit(): void {}
 
   setContent(element: Node) {
     if (this.content != undefined) {
       let nativeElement: HTMLElement = this.content.nativeElement;
       nativeElement.appendChild(element);
     }
+  }
+
+  setType(v: number) {
+    this.tag.nativeElement.style.backgroundColor = "#" + this.colors[v - 1];
   }
 }

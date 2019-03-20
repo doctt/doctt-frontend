@@ -57,7 +57,7 @@ export class CustomTextareaComponent implements OnInit {
     }
   }
 
-  select(v: Number): void {
+  select(v: number): void {
     let common = this.lastSelection.commonAncestorContainer;
     if (common === this.editor.nativeElement) {
       console.log("Multi line selection");
@@ -149,6 +149,7 @@ export class CustomTextareaComponent implements OnInit {
 
       let element: ComponentRef<TagComponent> = ref;
       element.instance.setContent(content);
+      element.instance.setType(v);
     } else {
       console.log(
         "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
