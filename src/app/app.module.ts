@@ -9,7 +9,8 @@ import {
   MatToolbarModule,
   MatSidenavModule,
   MatIconModule,
-  MatChipsModule
+  MatChipsModule,
+  MatProgressBarModule
 } from "@angular/material";
 
 import { AppComponent } from "./app.component";
@@ -47,6 +48,7 @@ import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.comp
     MatToolbarModule,
     MatCheckboxModule,
     MatIconModule,
+    MatProgressBarModule,
     MatSidenavModule,
     MatChipsModule,
     PortalModule
