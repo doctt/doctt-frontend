@@ -12,6 +12,10 @@
             "es6",
             "dom"
         ],
+        "paths": {
+            "Models*": ["src/app/models/*"]
+        },
+        "baseUrl": "./",
         "typeRoots": [
             "node_modules/@types"
         ],

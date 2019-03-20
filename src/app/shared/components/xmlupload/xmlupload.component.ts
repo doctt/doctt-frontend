@@ -2,30 +2,7 @@ import { Component } from "@angular/core";
 import { HtmlParser } from "@angular/compiler";
 import { parse } from "url";
 
-interface Header {
-  textfile: string;
-  lang: string;
-}
-
-interface Segment {
-  features: string[];
-  id: number;
-  state: string;
-}
-
-interface Body {
-  segments: Segment[];
-}
-
-interface Document {
-  header: Header;
-  body: Body;
-}
-
-interface File {
-  version : number;
-  data: Document;
-}
+import {Body, Document, Segment, Header, File} from 'Models/document/document';
 
 function createSegment(features: string[], id: number, state: string) {
   let newSegment = { features : [""] , id: -1, state : "active"};
@@ -119,10 +96,7 @@ export class XmlUploadComponent {
         body : bod
       }
 
-      let file : File = {
-        version : 1,
-        data : doc
-      }
+      let file : File = new File(1, doc);
     };
 
   }

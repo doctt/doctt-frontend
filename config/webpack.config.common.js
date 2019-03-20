@@ -13,6 +13,9 @@ module.exports = {
 
   resolve: {
     extensions: [".ts", ".js"],
+    alias: {
+      Models: helpers.root("src/app/models")
+    }
   },
 
   module: {
@@ -23,17 +26,19 @@ module.exports = {
       },
       {
         test: /\.(scss|sass|css)$/,
-        loaders: ['to-string-loader', 'css-loader', 'sass-loader'],
+        loaders: ["to-string-loader", "css-loader", "sass-loader"]
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [{
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'fonts/'
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "fonts/"
+            }
           }
-        }]
+        ]
       }
     ]
   },
