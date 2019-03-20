@@ -77,7 +77,6 @@ export class CustomTextareaComponent implements OnInit {
       let text = node.textContent;
 
       let span_container;
-      //span_container.style.display = 'inline-block';
 
       let element_container;
       let content: Node;
