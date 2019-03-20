@@ -1,6 +1,4 @@
 import { Component } from "@angular/core";
-import { HtmlParser } from "@angular/compiler";
-import { parse } from "url";
 
 @Component({
   selector: "xmlexport",
@@ -9,12 +7,16 @@ import { parse } from "url";
 })
 export class XmlExportComponent {
   text : string;
+  FileSaver = require('file-saver');
  ngOnInit(){
   this.text = document.querySelector(".txt").innerHTML;
  }
 
  export(){
    console.log(this.text);
+   var blob = new Blob([this.text], {type: "text/plain;charset=utf-8"});
+   this.FileSaver.saveAs(blob, "filename.txt");
+   
  }
 
  updateText(){
