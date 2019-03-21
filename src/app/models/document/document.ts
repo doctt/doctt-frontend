@@ -7,6 +7,7 @@ interface Segment {
     features: string[];
     id: number;
     state: string;
+    text: string;
 }
 
 interface Body {

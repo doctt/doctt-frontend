@@ -6,13 +6,15 @@ import { TextEditComponent} from './shared/components/textedit/textedit.componen
 import { XmlUploadComponent} from './shared/components/xmlupload/xmlupload.component';
 import { TreeComponent } from './shared/components/tree/tree.component';
 import { DocumentUploadComponent } from './shared/components/documentupload/documentupload.component';
+import { TreeUploadComponent } from './shared/components/treeupload/treeupload.component';
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
   { path: "menu", loadChildren: "./modules/menu/menu.module#MenuModule" },
   { path: "editor", component: TextEditComponent },
   { path: "documents/upload", component: DocumentUploadComponent },
-  { path: "tree", component: TreeComponent }
+  { path: "tree", component: TreeComponent },
+  { path: "trees/upload", component: TreeUploadComponent }
 ];
 
 @NgModule({

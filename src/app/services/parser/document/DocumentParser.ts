@@ -14,8 +14,8 @@ import {
 export class DocumentParserService {
   private debug: boolean = false;
 
-  createSegment(features: string[], id: number, state: string): Segment {
-    let newSegment: Segment = { features: [""], id: -1, state: "active" };
+  createSegment(features: string[], id: number, state: string, text: string): Segment {
+    let newSegment: Segment = { features: [""], id: -1, state: "active", text: "" };
     if (features !== null) {
       newSegment.features = features;
     }
@@ -25,6 +25,11 @@ export class DocumentParserService {
     if (state !== null) {
       newSegment.state = state;
     }
+
+    if(text !== null){
+        newSegment.text = text;
+    }
+
     return newSegment;
   }
 
@@ -43,11 +48,6 @@ export class DocumentParserService {
       }
     );
 
-    if (this.debug) {
-      console.log(segmentsArray[0].textContent.split("\n"));
-      console.log(segmentsArray);
-    }
-
     let segments: Segment[] = [];
     for (let segment of segmentsArray) {
       let features = (segment.getAttribute("features") !== null ? segment.getAttribute("features").split("; ") : []);
@@ -55,7 +55,8 @@ export class DocumentParserService {
         this.createSegment(
           features,
           parseInt(segment.getAttribute("id")),
-          "active"
+          "active",
+          segment.innerHTML
         )
       );
     }
@@ -71,6 +72,9 @@ export class DocumentParserService {
     let output_doc: DocTTDocument = { header, body };
 
     let file: File = new File(1, output_doc);
+
+    console.log(file);
+
     return file;
   }
 }
