@@ -19,7 +19,7 @@ interface Feature {
 
 interface System {
   name: string;
-  ec: string;
+  parent: string;
   features: Feature[]
 }
 
@@ -28,18 +28,64 @@ interface System {
 })
 export class TreeParserService {
   private debug: boolean = false;
+  private hm: Map<String, Array<System>>;
 
-  
-  feat2Child(features: Feature[]) : TreeNode[] {
-
+  hasChildrens(id: string): boolean {
+    return this.hm.get(id) != undefined && this.hm.get(id).length > 0;
   }
 
+  parseRootChildren(parent: System[]) : TreeNode[] {
+    let treeNodes : TreeNode[] = [];
 
-  parseRealisations(node: Element) : Realisation[] {
-    let r : Array<Realisation> = [];
+    for(let childSystem of parent){
+      treeNodes.push(this.parseChild(childSystem));
+    }
+
+    return treeNodes;
+  }
+
+  parseChild(childSystem : System) : TreeNode {
+    return {
+      id: childSystem.name,
+      children: this.parseChildren(childSystem)
+    };
+  }
+
+  parseFeatureChildren(feature : Feature) : TreeNode[] {
+    let treeNodes : TreeNode[] = [];
+    if(this.hm.has(feature.name)) {
+      treeNodes = this.parseRootChildren(this.hm.get(feature.name));
+    }
+    return treeNodes;
+  }
+
+  parseChildren(parent: System): TreeNode[] {
+    let childNodes: TreeNode[] = [];
+
+    if(this.hm.has(parent.name)){
+      childNodes.push(this.parseChild(parent));
+    }
+
+    for (let feature of parent.features) {
+      let children : TreeNode[];
+      if(this.hm.has(feature.name)){
+        children = this.parseFeatureChildren(feature);
+      }
+
+      childNodes.push({
+        id: feature.name,
+        children
+      });
+    }
+
+    return childNodes;
+  }
+
+  parseRealisations(node: Element): Realisation[] {
+    let r: Array<Realisation> = [];
 
     let realisationNodes = node.querySelectorAll("REALISATION");
-    realisationNodes.forEach((n)=>{
+    realisationNodes.forEach(n => {
       r.push({
         op: n.querySelector("OP").textContent,
         args: n.querySelector("ARGS").textContent
@@ -48,31 +94,30 @@ export class TreeParserService {
     return r;
   }
 
-  parseFeatures(node: Element) : Feature[] {
-    let f : Array<Feature> = [];
+  parseFeatures(node: Element): Feature[] {
+    let f: Array<Feature> = [];
 
     let featuresNodes = node.querySelectorAll("FEATURE");
 
-    featuresNodes.forEach((n)=>{
+    featuresNodes.forEach(n => {
       let realisations = n.querySelector("REALISATIONS");
 
       f.push({
         name: n.querySelector("NAME").textContent,
-        realisations: (realisations !== null ? 
-          this.parseRealisations(realisations) : [])
-      })
+        realisations:
+          realisations !== null ? this.parseRealisations(realisations) : []
+      });
     });
-
 
     return f;
   }
 
-  parseSystem(node : Element) : System {
+  parseSystem(node: Element): System {
     return {
       name: node.querySelector("NAME").textContent,
-      ec: node.querySelector("EC").textContent,
+      parent: node.querySelector("EC").textContent,
       features: this.parseFeatures(node.querySelector("FEATURES"))
-    }
+    };
   }
 
   parseXML(doc: Document): TreeFile {
@@ -89,26 +134,23 @@ export class TreeParserService {
 
     let rootNode: TreeNode = {
       id: root_feature.querySelector("NAME").textContent,
-      name: null,
       children: []
     };
 
     let systems = doc.querySelector("SYSTEMS");
 
-    let hm: Map<String, System> = new Map<String, System>();
+    this.hm = new Map<String, Array<System>>();
 
-
-    systems.querySelectorAll("SYSTEM").forEach((n)=>{
+    systems.querySelectorAll("SYSTEM").forEach(n => {
       let system = this.parseSystem(n);
-      console.log(system);
-      hm.set(system.ec, system);
+
+      if (this.hm.get(system.parent) == null) {
+        this.hm.set(system.parent, []);
+      }
+      this.hm.get(system.parent).push(system);
     });
 
-    let rootSystem = hm.get(rootNode.id);
-    rootNode.name = rootSystem.name;
-
-    rootNode.children = this.feat2Child(rootSystem.features);
-
+    rootNode.children = this.parseRootChildren(this.hm.get(rootNode.id));
 
     let tc: TreeContent = {
       root: rootNode
@@ -116,7 +158,7 @@ export class TreeParserService {
 
     let treeOutput = new TreeFile(1, tc);
 
-    console.log(hm);
-    return null;
+    console.log(treeOutput);
+    return treeOutput;
   }
 }
