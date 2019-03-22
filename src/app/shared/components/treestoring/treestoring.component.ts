@@ -1,6 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, OnInit } from "@angular/core";
 import { MatProgressBar } from "@angular/material";
-import { TreeService } from "Services/tree/Tree";
+import { TreeService } from "../../../services/tree/Tree";
 
 @Component({
   selector: "treestoring",
