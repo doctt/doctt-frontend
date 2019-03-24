@@ -5,8 +5,8 @@ interface Realisation {
 
 interface TreeNode {
     id: string;
-    realisations: Realisation[] | null;
-    children: TreeNode[];
+    realisations?: Realisation[];
+    children?: TreeNode[];
 }
 
 interface TreeContent {

@@ -130,9 +130,7 @@ export class TreeParserService {
     let root_feature = root.querySelector("FEATURE");
 
     let rootNode: TreeNode = {
-      id: root_feature.querySelector("NAME").textContent,
-      realisations: null,
-      children: []
+      id: root_feature.querySelector("NAME").textContent
     };
 
     let systems = doc.querySelector("SYSTEMS");
