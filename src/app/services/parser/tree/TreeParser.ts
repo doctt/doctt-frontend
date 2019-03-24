@@ -23,7 +23,6 @@ interface System {
   providedIn: "root"
 })
 export class TreeParserService {
-  private debug: boolean = false;
   private hm: Map<String, Array<System>>;
 
   hasChildrens(id: string): boolean {
