@@ -1,5 +1,11 @@
+interface Realisation {
+    op: string;
+    args: string;
+}
+
 interface TreeNode {
     id: string;
+    realisations: Realisation[] | null;
     children: TreeNode[];
 }
 
@@ -17,4 +23,4 @@ class TreeFile {
     }
 };
 
-export {TreeFile, TreeContent, TreeNode};
+export {TreeFile, TreeContent, TreeNode, Realisation};

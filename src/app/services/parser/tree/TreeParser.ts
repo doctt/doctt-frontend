@@ -3,13 +3,9 @@ import { Injectable } from '@angular/core';
 import {
   TreeFile,
   TreeContent,
-  TreeNode
+  TreeNode,
+  Realisation
 } from "Models/tree/tree";
-
-interface Realisation {
-  op: string;
-  args: string;
-}
 
 interface Feature {
   name: string;
@@ -47,6 +43,7 @@ export class TreeParserService {
   parseChild(childSystem : System) : TreeNode {
     return {
       id: childSystem.name,
+      realisations: null,
       children: this.parseChildren(childSystem)
     };
   }
@@ -74,6 +71,7 @@ export class TreeParserService {
 
       childNodes.push({
         id: feature.name,
+        realisations: feature.realisations,
         children
       });
     }
@@ -134,6 +132,7 @@ export class TreeParserService {
 
     let rootNode: TreeNode = {
       id: root_feature.querySelector("NAME").textContent,
+      realisations: null,
       children: []
     };
 
@@ -158,7 +157,6 @@ export class TreeParserService {
 
     let treeOutput = new TreeFile(1, tc);
 
-    console.log(treeOutput);
     return treeOutput;
   }
 }
