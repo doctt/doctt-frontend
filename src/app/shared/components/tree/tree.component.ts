@@ -123,6 +123,8 @@ export class TreeComponent implements OnInit {
   ): DynamicFlatNode {
     if (level == 0 || level == -1) {
       color = this.colors[element];
+      color.s = 50;
+      color.l = 50;
     } else {
       color = this.getColor(color, level, element);
     }
@@ -153,12 +155,12 @@ export class TreeComponent implements OnInit {
   getColor(color: HSLColor, level: number, element: number): HSLColor {
     let nc = new HSLColor(color.h, color.s, color.l);
 
-    nc.h += 3;
     element += 1;
 
     if (level != 0 && level != -1) {
-      nc.h += element * 10;
-      nc.l += 1;
+      nc.h += 0 + element * 5;
+      nc.l += 0 + element * 2;
+      nc.s += 8;
       //nc.h = nc.h % 360;
     }
 
