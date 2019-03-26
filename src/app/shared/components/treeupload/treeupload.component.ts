@@ -49,7 +49,7 @@ export class TreeUploadComponent implements OnInit {
     console.log("Got Tree ", document);
     let file: TreeFile = this.treeService.parseXML(document);
     // Show the tree w/ the TreeComponent
-    //this.treeComponent.load(file.data);
+    this.treeComponent.load(file.data);
 
     this.resultBox.nativeElement.innerHTML = this.jsHighlight(
       JSON.stringify(file, null, 2)
