@@ -6,6 +6,7 @@ import { TextEditComponent} from './shared/components/textedit/textedit.componen
 import { XmlUploadComponent} from './shared/components/xmlupload/xmlupload.component';
 import { TreeComponent } from './shared/components/tree/tree.component';
 import { DocumentUploadComponent } from './shared/components/documentupload/documentupload.component';
+import { TreeStoringComponent } from './shared/components/treestoring/treestoring.component';
 import { TreeUploadComponent } from './shared/components/treeupload/treeupload.component';
 
 const appRoutes: Routes = [
@@ -14,6 +15,7 @@ const appRoutes: Routes = [
   { path: "editor", component: TextEditComponent },
   { path: "documents/upload", component: DocumentUploadComponent },
   { path: "tree", component: TreeComponent },
+  { path: "treestoring", component: TreeStoringComponent },
   { path: "trees/upload", component: TreeUploadComponent }
 ];
 

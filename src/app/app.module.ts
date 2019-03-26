@@ -29,6 +29,7 @@ import { TagComponent } from "./shared/components/tag/tag.component";
 import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.component";
 import { TreeComponent } from "./shared/components/tree/tree.component";
 import { DocumentUploadComponent } from "./shared/components/documentupload/documentupload.component";
+import { TreeStoringComponent } from "./shared/components/treestoring/treestoring.component";
 import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.component";
 
 @NgModule({
@@ -44,7 +45,8 @@ import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.c
     XmlUploadComponent,
     TreeComponent,
     DocumentUploadComponent,
-    TreeUploadComponent,
+    TreeStoringComponent,
+    TreeUploadComponent
   ],
   imports: [
     BrowserAnimationsModule,
