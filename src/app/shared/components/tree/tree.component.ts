@@ -3,6 +3,7 @@ import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { TreeContent, TreeNode } from "Models/tree/tree";
 import { getClosureSafeProperty } from "@angular/core/src/util/property";
+import { TreeService } from "Services/tree/Tree";
 
 interface DynamicFlatNode {
   name: string;
@@ -33,8 +34,13 @@ export class TreeComponent implements OnInit {
   private colorLum : number = 50;
   private treeLevelMult : number = 1.0;
 
-  constructor() {
-    this.dataSource.data = null;
+  constructor(private treeService : TreeService) {
+    if(treeService.getActualTree() == null){
+      this.dataSource.data = null;
+      console.log("Tree not loaded!");
+    }else{
+      this.load(treeService.getActualTree().data);
+    }
   }
 
   load(tree: TreeContent){

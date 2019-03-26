@@ -15,9 +15,9 @@ export class TreeService {
         return null;
     }
     if(this.debug){
-        console.log("Got document ", new DOMParser().parseFromString(JSON.parse(tree).tree, "text/xml"));
+        console.log("Got document ", JSON.parse(tree).tree);
     }
     
-    return this.treeParserService.parseXML(new DOMParser().parseFromString(JSON.parse(tree).tree, "text/xml"));
+    return JSON.parse(tree).tree;
   }
 }

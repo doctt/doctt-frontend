@@ -54,5 +54,9 @@ export class TreeUploadComponent implements OnInit {
     this.resultBox.nativeElement.innerHTML = this.jsHighlight(
       JSON.stringify(file, null, 2)
     );
+
+    localStorage.setItem('tree', JSON.stringify({
+      tree : file
+    }))
   }
 }
