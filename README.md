@@ -1,6 +1,6 @@
 # DocTT - Frontend
 
-![Build Status](https://api.travis-ci.org/doctt/doctt-frontend.svg?branch=master)
+[![Build Status](https://api.travis-ci.org/doctt/doctt-frontend.svg?branch=master)](https://travis-ci.org/doctt/doctt-frontend)
 
 The frontend for the [DocTT](https://github.com/doctt) project.
 
