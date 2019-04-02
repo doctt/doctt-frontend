@@ -66,22 +66,19 @@ export class TreeComponent implements OnInit {
   treeControl = new NestedTreeControl<DynamicFlatNode>(node => node.children);
   dataSource = new MatTreeNestedDataSource<DynamicFlatNode>();
 
-  private colorSat: number = 60;
-  private colorLum: number = 50;
-  private treeLevelMult: number = 1.0;
   private colors: Array<HSLColor> = [
-    toHSL("#fc5353"),
-    toHSL("#a7fc53"),
-    toHSL("#53fca7"),
-    toHSL("#53c4fc"),
-    toHSL("#5353fc")
+    toHSL("#9E9E9E"),
+    toHSL("#f44336"),
+    toHSL("#673AB7"),
+    toHSL("#4CAF50"),
+    toHSL("#FFC107"),
   ];
 
-  constructor(private treeService : TreeService) {
-    if(treeService.getActualTree() == null){
+  constructor(private treeService: TreeService) {
+    if (treeService.getActualTree() == null) {
       this.dataSource.data = null;
       console.log("Tree not loaded!");
-    }else{
+    } else {
       this.load(treeService.getActualTree().data);
     }
   }
@@ -97,26 +94,7 @@ export class TreeComponent implements OnInit {
 
     let lastColor = 0;
 
-    if (root.children !== undefined) {
-      let incr = 360.0 / root.children.length;
-
-      this.treeLevelMult = root.children.length;
-
-      let element = 0;
-
-      let level = 0;
-      if (root.children != null && root.children.length == 1) {
-        level = -1;
-      }
-
-      for (let child of root.children) {
-        let color: HSLColor = this.colors[element];
-        nodes.push(this.getDynamicFlatNode(child, color, level, element));
-
-        lastColor += incr;
-        element++;
-      }
-    }
+    nodes.push(this.getDynamicFlatNode(root, this.colors[0], -1, 0));
 
     return nodes;
   }
@@ -127,31 +105,52 @@ export class TreeComponent implements OnInit {
     level: number,
     element: number
   ): DynamicFlatNode {
-    if (level == 0 || level == -1) {
-      color = this.colors[element];
-      color.s = 50;
-      color.l = 50;
+
+    let newColor : HSLColor;
+    if (level == -1) {
+      // Root
+      newColor = this.colors[0];
+      newColor.s = 50;
+      newColor.l = 50;
+    } else if (level == 0) {
+      let c = this.colors[element + 1];
+      newColor = new HSLColor(c.h, 60, 44);
     } else {
-      color = this.getColor(color, level, element);
+      newColor = this.getColor(color, level, element);
     }
     let dfn: DynamicFlatNode = {
       name: node.id,
       color:
-        level == 0 || level == -1
-          ? color
-          : this.getColor(color, level, element + 1)
+        level == 0 || level == -1 ? newColor : this.getColor(newColor, level, element)
     };
-
-    console.log(dfn.name, dfn.color);
 
     if (node.children !== undefined) {
       dfn.children = [];
-      let element = 0;
-      for (const child of node.children) {
-        dfn.children.push(
-          this.getDynamicFlatNode(child, color, level + 1, element)
-        );
-        element++;
+
+      if (node.children.length == 1) {
+        if (node.children[0].children != undefined) {
+          if (node.children[0].children.length > 1) {
+            // Skip node, show directly node.children[0]
+            node.children[0].id = node.id;
+            return this.getDynamicFlatNode(
+              node.children[0],
+              color,
+              level,
+              element
+            );
+          }
+        }
+      }
+
+      {
+        let element = 0;
+
+        for (const child of node.children) {
+          dfn.children.push(
+            this.getDynamicFlatNode(child, newColor, level + 1, element)
+          );
+          element++;
+        }
       }
     }
 
@@ -161,14 +160,10 @@ export class TreeComponent implements OnInit {
   getColor(color: HSLColor, level: number, element: number): HSLColor {
     let nc = new HSLColor(color.h, color.s, color.l);
 
-    element += 1;
-
-    if (level != 0 && level != -1) {
-      nc.h += 0 + element * 5;
-      nc.l += 0 + element * 2;
-      nc.s += 8;
-      //nc.h = nc.h % 360;
-    }
+    nc.h += 4 + Math.exp(-level) * 15 * element;
+    nc.l += 8;
+    nc.s += 10;
+    //nc.h = nc.h % 360;
 
     return nc;
   }
