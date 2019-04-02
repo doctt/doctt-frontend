@@ -62,6 +62,7 @@
   },
   "scripts": {
     "build:dev": "webpack-dev-server --inline --hot --progress --port 8080",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "ciTest": "jest --verbose --maxWorkers=2"
   }
 }
