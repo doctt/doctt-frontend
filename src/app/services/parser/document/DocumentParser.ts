@@ -50,7 +50,10 @@ export class DocumentParserService {
 
     let segments: Segment[] = [];
     for (let segment of segmentsArray) {
-      let features = (segment.getAttribute("features") !== null ? segment.getAttribute("features").split("; ") : []);
+      let features = (segment.getAttribute("features") !== null ? segment.getAttribute("features").split(";") : []);
+      features.map((v, i, out)=>{
+        out[i] = v.trim();
+      });
       segments.push(
         this.createSegment(
           features,
@@ -72,8 +75,6 @@ export class DocumentParserService {
     let output_doc: DocTTDocument = { header, body };
 
     let file: File = new File(1, output_doc);
-
-    console.log(file);
 
     return file;
   }

@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='utf-8'?>
+<NETWORK VERSION='1.1'>
+  <ROOT>
+    <FEATURE>
+      <NAME>clauses</NAME>
+      <STATE>active</STATE>
+      <REALISATIONS>
+        <REALISATION>
+          <OP>select</OP>
+          <ARGS>if clauses</ARGS>
+        </REALISATION>
+      </REALISATIONS>
+    </FEATURE>
+  </ROOT>
+  <SYSTEMS>
+    <SYSTEM>
+      <NAME>CLAUSES-TYPE</NAME>
+      <EC>clauses</EC>
+      <FEATURES>
+        <FEATURE>
+          <NAME>material</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;@material-verb&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+        <FEATURE>
+          <NAME>mental</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;@mental-verb&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+        <FEATURE>
+          <NAME>verbal</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;@verbal-verb&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+        <FEATURE>
+          <NAME>relational</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;be%&apos;</ARGS>
+            </REALISATION>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;have%&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+        <FEATURE>
+          <NAME>existential</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;be% in&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+      </FEATURES>
+    </SYSTEM>
+
+    <SYSTEM>
+      <NAME>CLAUSES-TYPE2</NAME>
+      <EC>clauses</EC>
+      <FEATURES>
+        <FEATURE>
+          <NAME>nonfinite-clause</NAME>
+          <STATE>active</STATE>
+        </FEATURE>
+        <FEATURE>
+          <NAME>finite-clause</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;@finite-verb&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+      </FEATURES>
+    </SYSTEM>
+
+    <SYSTEM>
+      <NAME>NONFINITE-CLAUSE-TYPE</NAME>
+      <EC>nonfinite-clause</EC>
+      <FEATURES>
+        <FEATURE>
+          <NAME>gerund-clause</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;^ @gerund&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+        <FEATURE>
+          <NAME>participle-clause</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;^ @participle&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+        <FEATURE>
+          <NAME>infinitive-clause</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if containing immediately &apos;^ to @infinitive&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+      </FEATURES>
+    </SYSTEM>
+
+    <SYSTEM>
+      <NAME>FINITE-CLAUSE-TYPE</NAME>
+      <EC>finite-clause</EC>
+      <FEATURES>
+        <FEATURE>
+          <NAME>modal</NAME>
+          <STATE>active</STATE>
+        </FEATURE>
+        <FEATURE>
+          <NAME>nonmodal</NAME>
+          <STATE>active</STATE>
+        </FEATURE>
+      </FEATURES>
+    </SYSTEM>
+
+    <SYSTEM>
+      <NAME>CLAUSES-TYPE3</NAME>
+      <EC>clauses</EC>
+      <FEATURES>
+        <FEATURE>
+          <NAME>passive-clause</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if clauses containing immediately &apos;be% @participle&apos;</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+        <FEATURE>
+          <NAME>active-clause</NAME>
+          <STATE>active</STATE>
+          <REALISATIONS>
+            <REALISATION>
+              <OP>select</OP>
+              <ARGS>if clauses&amp;notpassive-clause</ARGS>
+            </REALISATION>
+          </REALISATIONS>
+        </FEATURE>
+      </FEATURES>
+    </SYSTEM>
+
+  </SYSTEMS></NETWORK>
