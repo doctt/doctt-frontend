@@ -1,61 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { MatTreeNestedDataSource } from "@angular/material/tree";
 import { NestedTreeControl } from "@angular/cdk/tree";
-import { TreeContent, TreeNode } from "Models/tree/tree";
-import { getClosureSafeProperty } from "@angular/core/src/util/property";
+import { TreeContent, TreeNode } from "Models/tree/Tree";
 import { TreeService } from "Services/tree/Tree";
-
-interface DynamicFlatNode {
-  name: string;
-  color: HSLColor;
-  children?: DynamicFlatNode[];
-}
-
-class HSLColor {
-  public h: number;
-  public s: number;
-  public l: number;
-
-  constructor (h: number, s: number, l: number){
-    this.h = h;
-    this.s = s;
-    this.l = l;
-  }
-
-  toCSS() : string {
-    return `hsl(${this.h}, ${this.s}%, ${this.l}%)`;
-  }
-}
-
-function toHSL(hex : string) : HSLColor {
-  hex = hex.toUpperCase();
-  if(!hex.match(/^#[A-F0-9]{6}$/)){
-    return null;
-  }
-  let v = hex.match(/[A-F0-9]{2}/g);
-  let r = parseInt(v[0], 16) / 255;
-  let g = parseInt(v[1], 16) / 255;
-  let b = parseInt(v[2], 16) / 255;
-
-  let min = Math.min(r,g,b);
-  let max = Math.max(r,g,b);
-
-  let l = (max + min) / 2;
-  let s = (l < 0.5 ? (max-min)/(max+min) : (max-min)/(2.0 - max - min));
-  let h = (max == r ? (g-b)/(max-min) : (
-    max == g ? 2.0 + (b-r) / (max-min) :
-    4.0 + (r-g) / (max-min)
-  ));
-
-  h *= 60;
-  if(h < 0){
-    h += 360;
-  }
-
-  let hslColor = new HSLColor(Math.round(h), Math.round(s * 100), Math.round(l * 100));
-
-  return hslColor;
-}
+import { HSLColor } from "Models/hslcolor/HSLColor";
+import { ColorizedNode } from "Models/tree/ColorizedTree";
+import { TreeColorizer } from "Services/tree/TreeColorizer";
 
 @Component({
   selector: "doctt-tree",
@@ -63,16 +13,10 @@ function toHSL(hex : string) : HSLColor {
   styleUrls: ["./tree.component.scss"]
 })
 export class TreeComponent implements OnInit {
-  treeControl = new NestedTreeControl<DynamicFlatNode>(node => node.children);
-  dataSource = new MatTreeNestedDataSource<DynamicFlatNode>();
+  treeControl = new NestedTreeControl<ColorizedNode>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<ColorizedNode>();
 
-  private colors: Array<HSLColor> = [
-    toHSL("#9E9E9E"),
-    toHSL("#f44336"),
-    toHSL("#673AB7"),
-    toHSL("#4CAF50"),
-    toHSL("#FFC107"),
-  ];
+  
 
   constructor(private treeService: TreeService) {
     if (treeService.getActualTree() == null) {
@@ -84,91 +28,12 @@ export class TreeComponent implements OnInit {
   }
 
   load(tree: TreeContent) {
-    console.log("Loading tree", tree);
-    this.dataSource.data = this.toDataSource(tree.root);
-    console.log(this.dataSource.data);
+    this.dataSource.data = TreeColorizer.colorize(tree.root);
+    console.log("Tree loaded");
   }
 
-  toDataSource(root: TreeNode): DynamicFlatNode[] {
-    let nodes: DynamicFlatNode[] = [];
 
-    let lastColor = 0;
-
-    nodes.push(this.getDynamicFlatNode(root, this.colors[0], -1, 0));
-
-    return nodes;
-  }
-
-  getDynamicFlatNode(
-    node: TreeNode,
-    color: HSLColor,
-    level: number,
-    element: number
-  ): DynamicFlatNode {
-
-    let newColor : HSLColor;
-    if (level == -1) {
-      // Root
-      newColor = this.colors[0];
-      newColor.s = 50;
-      newColor.l = 50;
-    } else if (level == 0) {
-      let c = this.colors[element + 1];
-      newColor = new HSLColor(c.h, 60, 44);
-    } else {
-      newColor = this.getColor(color, level, element);
-    }
-    let dfn: DynamicFlatNode = {
-      name: node.id,
-      color:
-        level == 0 || level == -1 ? newColor : this.getColor(newColor, level, element)
-    };
-
-    if (node.children !== undefined) {
-      dfn.children = [];
-
-      if (node.children.length == 1) {
-        if (node.children[0].children != undefined) {
-          if (node.children[0].children.length > 1) {
-            // Skip node, show directly node.children[0]
-            node.children[0].id = node.id;
-            return this.getDynamicFlatNode(
-              node.children[0],
-              color,
-              level,
-              element
-            );
-          }
-        }
-      }
-
-      {
-        let element = 0;
-
-        for (const child of node.children) {
-          dfn.children.push(
-            this.getDynamicFlatNode(child, newColor, level + 1, element)
-          );
-          element++;
-        }
-      }
-    }
-
-    return dfn;
-  }
-
-  getColor(color: HSLColor, level: number, element: number): HSLColor {
-    let nc = new HSLColor(color.h, color.s, color.l);
-
-    nc.h += 4 + Math.exp(-level) * 15 * element;
-    nc.l += 8;
-    nc.s += 10;
-    //nc.h = nc.h % 360;
-
-    return nc;
-  }
-
-  hasChild = (_: number, node: DynamicFlatNode) =>
+  hasChild = (_: number, node: ColorizedNode) =>
     !!node.children && node.children.length > 0;
 
   ngOnInit(): void {}

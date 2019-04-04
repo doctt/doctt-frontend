@@ -3,20 +3,20 @@
         <div class="ftc-row" *ngIf="currentNode.parent != null"
         (click)="selectNode(currentNode.parent)">
             <div class="icon">
-                <i class="material-icons">
+                <i class="material-icons" [iconColor]="currentNode.color">
                     keyboard_arrow_left
                 </i>
             </div>
             <div class="name">
-                {{ currentNode.id }}
+                {{ currentNode.name }}
             </div>
         </div>
 
         <div class="ftc-row" *ngFor="let node of currentNode.children"
             (click)="selectNode(node)">
-            <div class="icon">
+            <div class="icon" [iconColor]="node.color">
                 <ng-container *ngIf="node.children != null && node.children.length > 0; else elseTemplate">
-                    <i class="material-icons">
+                    <i class="material-icons" >
                         folder
                     </i>
                 </ng-container>
@@ -27,7 +27,7 @@
                 </ng-template>
             </div>
             <div class="name">
-                {{ node.id }}
+                {{ node.name }}
             </div>
 
             <div class="icon icon-next" *ngIf="node.children != null">
