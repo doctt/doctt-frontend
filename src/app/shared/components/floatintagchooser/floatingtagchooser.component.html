@@ -3,8 +3,11 @@
         <div class="ftc-row" *ngIf="currentNode.parent != null"
         (click)="selectNode(currentNode.parent)">
             <div class="icon">
-                <i class="material-icons" [iconColor]="currentNode.color">
+                <!---<i class="material-icons" [iconColor]="currentNode.color">
                     keyboard_arrow_left
+                </i>-->
+                <i class="material-icons" [(iconColor)]="currentNode.color">
+                    indeterminate_check_box
                 </i>
             </div>
             <div class="name">
@@ -34,6 +37,17 @@
                 <i class="material-icons">
                     keyboard_arrow_right
                 </i>
+            </div>
+        </div>
+
+        <div class="ftc-row" *ngIf="currentNode.parent != null" (click)="selectNode(currentNode)">
+            <div class="icon">
+                <i class="material-icons" [iconColor]="currentNode.color">
+                    label
+                </i>
+            </div>
+            <div class="name">
+                {{ currentNode.name }}
             </div>
         </div>
     </div>

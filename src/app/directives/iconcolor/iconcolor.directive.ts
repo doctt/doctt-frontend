@@ -1,4 +1,4 @@
-import { Component, ElementRef, Directive, HostListener, Input, OnInit } from "@angular/core";
+import { Component, ElementRef, Directive, HostListener, Input, OnInit, SimpleChanges } from "@angular/core";
 import { HSLColor } from "Models/hslcolor/HSLColor";
 
 @Directive({
@@ -10,6 +10,10 @@ export class IconColorDirective implements OnInit {
     constructor(private el: ElementRef) {}
     
     ngOnInit(): void {
+        this.el.nativeElement.style.color = this.iconColor.toCSS();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
         this.el.nativeElement.style.color = this.iconColor.toCSS();
     }
 }

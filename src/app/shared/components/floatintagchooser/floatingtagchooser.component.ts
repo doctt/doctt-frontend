@@ -25,6 +25,10 @@ export class FloatingTagChooserComponent implements OnInit {
     }
 
     private selectNode(node: ColorizedNode){
+        if (node.children == null) {
+            // LEAF :)
+            return;
+        }
 
         if(node == this.currentNode.parent){
             this.currentNode = node;    
@@ -40,10 +44,6 @@ export class FloatingTagChooserComponent implements OnInit {
             
             node.parent = this.currentNode;
             this.currentNode = node;
-        }
-
-        if(this.currentNode.children == null){
-            // LEAF :)
         }
     }
 
