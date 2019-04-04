@@ -7,6 +7,7 @@ interface TreeNode {
     id: string;
     realisations?: Realisation[];
     children?: TreeNode[];
+    parent?: TreeNode
 }
 
 interface TreeContent {

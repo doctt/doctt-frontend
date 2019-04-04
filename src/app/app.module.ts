@@ -31,6 +31,7 @@ import { TreeComponent } from "./shared/components/tree/tree.component";
 import { DocumentUploadComponent } from "./shared/components/documentupload/documentupload.component";
 import { TreeStoringComponent } from "./shared/components/treestoring/treestoring.component";
 import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.component";
+import { FloatingTagChooserComponent } from "./shared/components/floatintagchooser/floatingtagchooser.component";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.c
     TreeComponent,
     DocumentUploadComponent,
     TreeStoringComponent,
-    TreeUploadComponent
+    TreeUploadComponent,
+    FloatingTagChooserComponent,
   ],
   imports: [
     BrowserAnimationsModule,

@@ -1,0 +1,33 @@
+<div class="ftc">
+    <div class="ftc-inner">
+        <div class="ftc-row" *ngIf="currentNode.parent != null"
+        (click)="selectNode(currentNode.parent)">
+            <div class="icon">
+                <i class="material-icons">
+                    keyboard_arrow_left
+                </i>
+            </div>
+            <div class="name">
+                {{ currentNode.id }}
+            </div>
+        </div>
+
+        <div class="ftc-row" *ngFor="let node of currentNode.children"
+            (click)="selectNode(node)">
+            <div class="icon">
+                <i class="material-icons">
+                    folder
+                </i>
+            </div>
+            <div class="name">
+                {{ node.id }}
+            </div>
+
+            <div class="icon icon-next" *ngIf="node.children != null">
+                <i class="material-icons">
+                    keyboard_arrow_right
+                </i>
+            </div>
+        </div>
+    </div>
+</div>
