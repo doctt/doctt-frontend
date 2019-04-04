@@ -25,23 +25,17 @@ export class FloatingTagChooserComponent implements OnInit {
     }
 
     private selectNode(node: ColorizedNode){
-        if (node.children == null) {
-            // LEAF :)
+        if(node.children == null || this.currentNode == node){
+            // Leaf
+            console.log(`Selected ${node.name}`);
             return;
         }
 
-        if(node == this.currentNode.parent){
-            this.currentNode = node;    
+        if(this.currentNode.parent == node){
+            // Going Up
+            this.currentNode = node;
         } else {
-            if(node.children != null &&
-                 node.children.length == 1 &&
-                 node.children[0].name == node.name){
-                node.parent = this.currentNode;
-                node.children[0].parent = this.currentNode;
-                this.currentNode = node.children[0];
-                return;
-            }
-            
+            // Going Down
             node.parent = this.currentNode;
             this.currentNode = node;
         }
