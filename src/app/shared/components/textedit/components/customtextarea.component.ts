@@ -12,16 +12,20 @@ import {
   ComponentRef
 } from "@angular/core";
 import { TagService } from "../../../../services/tag/TagService";
-import { MatChip, MatChipBase } from "@angular/material";
+import { MatChip, MatChipBase, DateAdapter } from "@angular/material";
 import { TagComponent } from "../../tag/tag.component";
 import {
   ComponentPortal,
   Portal,
   CdkPortalOutlet,
-  DomPortalHost
+  DomPortalHost,
+  PortalHost
 } from "@angular/cdk/portal";
 import { registerNgModuleType } from "@angular/core/src/linker/ng_module_factory_loader";
 import { createComponent } from "@angular/compiler/src/core";
+import { flushModuleScopingQueueAsMuchAsPossible } from "@angular/core/src/render3/jit/module";
+import { isFakeMousedownFromScreenReader } from "@angular/cdk/a11y";
+import { FloatingTagChooserComponent } from "../../floatintagchooser/floatingtagchooser.component";
 
 @Component({
   selector: "custom-textarea",
@@ -30,10 +34,17 @@ import { createComponent } from "@angular/compiler/src/core";
 })
 export class CustomTextareaComponent implements OnInit {
   @ViewChild("editorInner") editor: ElementRef;
+  @ViewChild("ftcContainer") ftcContainer: ElementRef;
+
+  private lastMouseDown : number = -1;
+  private isUserSelectingText : boolean = false;
 
   private lastSelection: Range;
+  private lastSelectionTime : number = -1;
   //constructor(private tagService: TagService) {}
   private componentFactory: ComponentFactory<TagComponent>;
+
+  private ftcPortalHost: DomPortalHost;
 
   constructor(
     private viewContainerRef: ViewContainerRef,
@@ -42,7 +53,6 @@ export class CustomTextareaComponent implements OnInit {
     private appRef: ApplicationRef
   ) {
     this.componentFactory = this.resolver.resolveComponentFactory(TagComponent);
-    console.log(this.viewContainerRef);
   }
 
   ngOnInit() {}
@@ -54,7 +64,66 @@ export class CustomTextareaComponent implements OnInit {
 
     if (this.editor.nativeElement.contains(sel.startContainer)) {
       this.lastSelection = sel;
+
+      if(sel.startOffset == sel.endOffset
+        && sel.startContainer == sel.endContainer){
+        console.log("Selection length is 0");
+        if(this.ftcPortalHost != null && 
+          this.ftcPortalHost.hasAttached){
+            this.ftcPortalHost.detach();
+          }
+      } else {
+        console.log("Selection changed");
+        this.lastSelectionTime = new Date().getTime();
+      }
     }
+  }
+
+  @HostListener("document:mouseup", ["$event"])
+  mouseUp(event: MouseEvent){
+    // TODO: Handle Keyboard Selection (KEY UP?)
+
+    if (this.editor.nativeElement.contains(event.target)){
+      console.log("Mouse up in our texteditor");
+      if(this.isUserSelectingText){
+        if(this.lastMouseDown < this.lastSelectionTime){
+          console.log("Valid selection :)", this.lastSelection, event);
+          this.isUserSelectingText = false;
+          this.showFloatingTagChooser(event.pageX, event.pageY);
+        }
+      }
+    }
+  }
+
+  @HostListener("document:mousedown", ["$event.target"])
+  mouseDown(target: HTMLElement){
+    if(this.editor.nativeElement.contains(target)){
+      this.isUserSelectingText = true;
+      this.lastMouseDown = new Date().getTime();
+    }
+  }
+
+  showFloatingTagChooser(x: number, y: number){
+    console.log(x, y);
+
+    if (this.ftcPortalHost == null) {
+      this.ftcPortalHost = new DomPortalHost(
+        this.ftcContainer.nativeElement,
+        this.resolver,
+        this.appRef,
+        this.injector
+      );
+    } else {
+      // Another component may already exist
+      if(this.ftcPortalHost.hasAttached){
+        this.ftcPortalHost.detach();
+      }
+    }
+
+    let portal = new ComponentPortal(FloatingTagChooserComponent);
+
+    let ref = this.ftcPortalHost.attachComponentPortal(portal);
+    ref.instance.moveTo(x, y);
   }
 
   select(v: number): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { TreeFile, TreeNode } from 'Models/tree/Tree';
 import { TreeService } from 'Services/tree/Tree';
 import { TreeColorizer } from 'Services/tree/TreeColorizer';
@@ -13,6 +13,8 @@ import { IconColorDirective } from 'Directives/iconcolor/iconcolor.directive'
     providers: [IconColorDirective]
 })
 export class FloatingTagChooserComponent implements OnInit {
+    @ViewChild("ftc")
+    private ftc : ElementRef<HTMLElement>;
     
     private currentNode: ColorizedNode;
     
@@ -43,6 +45,12 @@ export class FloatingTagChooserComponent implements OnInit {
 
     private load(tree: TreeFile){
         this.currentNode = TreeColorizer.colorize(tree.data.root)[0];
+    }
+
+    public moveTo(x: number, y: number){
+        this.ftc.nativeElement.style.top = y + "px";
+        this.ftc.nativeElement.style.left = x + "px";
+        this.ftc.nativeElement.style.position = 'absolute';
     }
 
     ngOnInit(): void { }
