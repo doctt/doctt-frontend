@@ -1,7 +1,7 @@
 import { TreeComponent } from "./tree.component";
 import { TreeService } from "Services/tree/Tree";
 import { TreeParserService } from "Services/parser/tree/TreeParser";
-import { TreeContent, TreeNode } from "Models/tree/tree";
+import { TreeContent, TreeNode } from "Models/tree/Tree";
 import fs = require('fs');
 
 test("toDataSource", () => {
@@ -39,7 +39,7 @@ test("load", () => {
   let content : TreeContent = treeService.getActualTree().data;
   tree.load(content);
 
-  //expect(tree.dataSource.data).toEqual(tree.toDataSource(content.root));
+  //lexpect(tree.dataSource.data).toEqual(tree.toDataSource(content.root));
 } );
 
 
