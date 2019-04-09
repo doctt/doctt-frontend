@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { HSLColor } from "Models/hslcolor/HSLColor";
 
 @Component({
   selector: "doctt-tag",
@@ -10,17 +11,18 @@ export class TagComponent implements OnInit {
   @ViewChild("tag") tag: ElementRef | undefined;
   @ViewChild("tagInner") content: ElementRef | undefined;
 
-  private colors: Array<string> = ["D81B60", "FB8C00"];
-
   constructor() {}
 
-  randomColor(): string {
-    return this.colors[
-      Math.ceil(Math.random() * this.colors.length) % this.colors.length
-    ];
+  ngOnInit(): void {}
+
+  onClick(event: MouseEvent){
+    console.log("Clicked tag :)");
+    event.preventDefault();
   }
 
-  ngOnInit(): void {}
+  onMouseOver(event: MouseEvent){
+    console.log("Mouse over tag", event);
+  }
 
   setContent(element: Node) {
     if (this.content != undefined) {
@@ -29,7 +31,9 @@ export class TagComponent implements OnInit {
     }
   }
 
-  setType(v: number) {
-    this.tag.nativeElement.style.backgroundColor = "#" + this.colors[v - 1];
+  setColor(color: HSLColor){
+    this.tag.nativeElement.style.backgroundColor = color.toCSS();
   }
+
+  
 }

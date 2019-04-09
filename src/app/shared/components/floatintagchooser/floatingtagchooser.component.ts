@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { TreeFile, TreeNode } from 'Models/tree/Tree';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { TreeFile } from 'Models/tree/Tree';
 import { TreeService } from 'Services/tree/Tree';
 import { TreeColorizer } from 'Services/tree/TreeColorizer';
 import { ColorizedNode } from 'Models/tree/ColorizedTree';
 import { IconColorDirective } from 'Directives/iconcolor/iconcolor.directive'
+import { Tag } from 'Models/tag/Tag';
 
 
 @Component({
@@ -15,6 +16,8 @@ import { IconColorDirective } from 'Directives/iconcolor/iconcolor.directive'
 export class FloatingTagChooserComponent implements OnInit {
     @ViewChild("ftc")
     private ftc : ElementRef<HTMLElement>;
+
+    @Output() tagSelection = new EventEmitter<Tag>();
     
     private currentNode: ColorizedNode;
     
@@ -26,10 +29,28 @@ export class FloatingTagChooserComponent implements OnInit {
         }
     }
 
+    private getFeatures(node: ColorizedNode) : string[] {
+        let features : string[] = [];
+        
+        if(node == null){
+            return features;
+        }
+
+        features.push(node.name);
+        features.push(...this.getFeatures(node.parent));
+
+        return features;
+    }
+
     private selectNode(node: ColorizedNode){
         if(node.children == null || this.currentNode == node){
             // Leaf
-            console.log(`Selected ${node.name}`);
+            node.parent = this.currentNode.parent;
+            this.tagSelection.emit({
+                name: node.name,
+                color: node.color,
+                features: this.getFeatures(node)
+            })
             return;
         }
 
