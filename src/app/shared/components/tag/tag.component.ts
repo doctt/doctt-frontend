@@ -16,7 +16,6 @@ export class TagComponent implements OnInit {
   ngOnInit(): void {}
 
   onClick(event: MouseEvent){
-    console.log("Clicked tag :)");
     event.preventDefault();
   }
 

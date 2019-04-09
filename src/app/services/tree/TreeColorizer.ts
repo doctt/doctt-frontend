@@ -13,12 +13,12 @@ class TreeColorizer {
 
   static colorize(root: TreeNode): ColorizedNode[] {
     let nodes: ColorizedNode[] = [];
-    nodes.push(this.getDynamicFlatNode(root, this.colors[0], -1, 0));
+    nodes.push(this.getColorizedNode(root, this.colors[0], -1, 0));
 
     return nodes;
   }
 
-  static getDynamicFlatNode(
+  static getColorizedNode(
     node: TreeNode,
     color: HSLColor,
     level: number,
@@ -52,7 +52,7 @@ class TreeColorizer {
           if (node.children[0].children.length > 1) {
             // Skip node, show directly node.children[0]
             node.children[0].id = node.id;
-            return this.getDynamicFlatNode(
+            return this.getColorizedNode(
               node.children[0],
               color,
               level,
@@ -67,7 +67,7 @@ class TreeColorizer {
 
         for (const child of node.children) {
           dfn.children.push(
-            this.getDynamicFlatNode(child, newColor, level + 1, element)
+            this.getColorizedNode(child, newColor, level + 1, element)
           );
           element++;
         }
