@@ -26,6 +26,8 @@ import { createComponent } from "@angular/compiler/src/core";
 import { flushModuleScopingQueueAsMuchAsPossible } from "@angular/core/src/render3/jit/module";
 import { isFakeMousedownFromScreenReader } from "@angular/cdk/a11y";
 import { FloatingTagChooserComponent } from "../../floatintagchooser/floatingtagchooser.component";
+import { Event } from "@angular/router";
+import { Tag } from "Models/tag/Tag";
 
 @Component({
   selector: "custom-textarea",
@@ -67,13 +69,11 @@ export class CustomTextareaComponent implements OnInit {
 
       if (sel.startOffset == sel.endOffset
         && sel.startContainer == sel.endContainer) {
-        console.log("Selection length is 0");
         if (this.ftcPortalHost != null &&
           this.ftcPortalHost.hasAttached) {
           this.ftcPortalHost.detach();
         }
       } else {
-        console.log("Selection changed");
         this.lastSelectionTime = new Date().getTime();
       }
     }
@@ -83,7 +83,6 @@ export class CustomTextareaComponent implements OnInit {
   mouseUp(event: MouseEvent) {
     // TODO: Handle Keyboard Selection (KEY UP?)
     if (this.editor.nativeElement.contains(event.target)) {
-      console.log("Mouse up in our texteditor");
       if (this.isUserSelectingText) {
         if (this.lastMouseDown < this.lastSelectionTime) {
           this.isUserSelectingText = false;
@@ -102,7 +101,6 @@ export class CustomTextareaComponent implements OnInit {
             posX = 0;
           }
 
-
           this.showFloatingTagChooser(posX, posY);
         }
       }
@@ -115,6 +113,16 @@ export class CustomTextareaComponent implements OnInit {
       this.isUserSelectingText = true;
       this.lastMouseDown = new Date().getTime();
     }
+  }
+
+  tagSelectionHandler(tag: Tag){
+    // Close FTC, apply tag
+
+    if(this.ftcPortalHost != null){
+      this.ftcPortalHost.detach();
+    }
+
+    this.select(tag);
   }
 
   showFloatingTagChooser(x: number, y: number) {
@@ -136,19 +144,13 @@ export class CustomTextareaComponent implements OnInit {
 
     let ref = this.ftcPortalHost.attachComponentPortal(portal);
     ref.instance.moveTo(x, y);
+    ref.instance.tagSelection.subscribe(this.tagSelectionHandler.bind(this));
   }
 
-  select(v: number): void {
+  select(tag: Tag): void {
     let common = this.lastSelection.commonAncestorContainer;
-    if (common === this.editor.nativeElement) {
-      console.log("Multi line selection");
-    }
-    console.log(v, this.lastSelection);
     let componentRef = this.componentFactory.create(this.injector);
 
-    let div = document.createElement("div");
-    div.style.backgroundColor = "red";
-    div.innerText = "Hello :)";
     let editorEl: HTMLElement = this.editor.nativeElement;
 
     let node = this.lastSelection.startContainer;
@@ -229,7 +231,7 @@ export class CustomTextareaComponent implements OnInit {
 
       let element: ComponentRef<TagComponent> = ref;
       element.instance.setContent(content);
-      element.instance.setType(v);
+      element.instance.setColor(tag.color);
     } else {
       console.log(
         "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
