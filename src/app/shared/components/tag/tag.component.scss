@@ -1,8 +1,12 @@
 div.tag {
+    cursor: pointer;
     display: inline-block;
     $radius: 5px;
     border-radius: $radius $radius $radius $radius; 
     padding: $radius;
     margin: $radius;
     color: white;
+    user-select: none;
+    -webkit-user-modify: read-only;
+    -moz-user-modify: read-only;
 }

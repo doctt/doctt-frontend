@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input, ElementRef, ViewEncapsulation } from '@angular/core';
 import { XmlUploadComponent } from '../xmlupload/xmlupload.component';
-import { TreeFile } from 'Models/tree/tree';
+import { TreeFile } from 'Models/tree/Tree';
 import { TreeParserService } from 'Services/parser/tree/TreeParser';
 import { TreeComponent } from '../tree/tree.component';
 

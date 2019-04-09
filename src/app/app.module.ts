@@ -24,13 +24,14 @@ import { AppRoutingModule } from "./app-routing.module";
 import { CustomTextareaComponent } from "./shared/components/textedit/components/customtextarea.component";
 import { PortalModule } from "@angular/cdk/portal";
 import { MatChipFactory } from "./shared/components/matchipfactory/matchipfactory.component";
-import { SentenceDirective } from "./directives/sentence/sentence.directive";
 import { TagComponent } from "./shared/components/tag/tag.component";
 import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.component";
 import { TreeComponent } from "./shared/components/tree/tree.component";
 import { DocumentUploadComponent } from "./shared/components/documentupload/documentupload.component";
 import { TreeStoringComponent } from "./shared/components/treestoring/treestoring.component";
 import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.component";
+import { FloatingTagChooserComponent } from "./shared/components/floatintagchooser/floatingtagchooser.component";
+import { IconColorDirective } from "./directives/iconcolor/iconcolor.directive";
 
 @NgModule({
   declarations: [
@@ -40,13 +41,14 @@ import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.c
     TextEditComponent,
     CustomTextareaComponent,
     MatChipFactory,
-    SentenceDirective,
+    IconColorDirective,
     TagComponent,
     XmlUploadComponent,
     TreeComponent,
     DocumentUploadComponent,
     TreeStoringComponent,
-    TreeUploadComponent
+    TreeUploadComponent,
+    FloatingTagChooserComponent,
   ],
   imports: [
     BrowserAnimationsModule,

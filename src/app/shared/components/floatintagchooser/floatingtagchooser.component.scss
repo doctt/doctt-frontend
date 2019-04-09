@@ -1,0 +1,67 @@
+.ftc {
+    $width: 250px;
+    $height: 100px;
+
+    $radius: 5px;
+    border-radius: $radius; 
+    width: $width;
+    min-height: $height;
+    background-color: #FAFAFA;
+    box-shadow: 0px 2px 7px 0px #999;
+
+    .ftc-inner {
+        padding: 5px;
+
+        .ftc-row {
+            cursor: pointer;
+            user-select: none;
+            padding: 5px;
+            border-bottom: 2px solid #EEE;
+            $rowHeight: 30px;
+            height: $rowHeight;
+            overflow: hidden;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+
+            div.icon {
+                float: left;
+                user-select: none;
+                padding-top: ($rowHeight - 24px) / 2;
+                line-height: 24px;
+                height: 24px;
+                i.color-red{
+                    color: #f44336;
+                }
+
+                i.color-blue {
+                    color: #3F51B5;
+                }
+
+                i.color-green {
+                    color: #4CAF50;
+                }
+            }
+
+            div.name {
+                float: left;
+                height: $rowHeight;
+                line-height: $rowHeight;
+                margin-left: 0.5em;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            div.icon-next {
+                float: right;
+                height: $rowHeight;
+                line-height: $rowHeight;
+            }
+        }
+
+        p {
+            margin-top: 0;
+        }
+    }
+}

@@ -15,7 +15,8 @@ module.exports = {
     extensions: [".ts", ".js"],
     alias: {
       Models: helpers.root("src/app/models"),
-      Services: helpers.root("src/app/services")
+      Services: helpers.root("src/app/services"),
+      Directives: helpers.root("src/app/directives")
     }
   },
 

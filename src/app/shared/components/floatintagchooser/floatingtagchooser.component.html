@@ -1,0 +1,54 @@
+<div class="ftc" #ftc>
+    <div class="ftc-inner">
+        <div class="ftc-row" *ngIf="currentNode.parent != null"
+        (click)="selectNode(currentNode.parent)">
+            <div class="icon">
+                <!---<i class="material-icons" [iconColor]="currentNode.color">
+                    keyboard_arrow_left
+                </i>-->
+                <i class="material-icons" [(iconColor)]="currentNode.color">
+                    indeterminate_check_box
+                </i>
+            </div>
+            <div class="name">
+                {{ currentNode.name }}
+            </div>
+        </div>
+
+        <div class="ftc-row" *ngFor="let node of currentNode.children"
+            (click)="selectNode(node)">
+            <div class="icon" [iconColor]="node.color">
+                <ng-container *ngIf="node.children != null && node.children.length > 0; else elseTemplate">
+                    <i class="material-icons" >
+                        add_box
+                    </i>
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <i class="material-icons">
+                        label
+                    </i>
+                </ng-template>
+            </div>
+            <div class="name">
+                {{ node.name }}
+            </div>
+
+            <div class="icon icon-next" *ngIf="node.children != null">
+                <i class="material-icons">
+                    keyboard_arrow_right
+                </i>
+            </div>
+        </div>
+
+        <div class="ftc-row" *ngIf="currentNode.parent != null" (click)="selectNode(currentNode)">
+            <div class="icon">
+                <i class="material-icons" [iconColor]="currentNode.color">
+                    label
+                </i>
+            </div>
+            <div class="name">
+                {{ currentNode.name }}
+            </div>
+        </div>
+    </div>
+</div>

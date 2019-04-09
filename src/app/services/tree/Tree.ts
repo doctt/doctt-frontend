@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TreeParserService } from '../parser/tree/TreeParser';
+import { TreeFile, TreeNode } from 'Models/tree/Tree';
+import { ColorizedNode } from 'Models/tree/ColorizedTree';
+import { TreeColorizer } from './TreeColorizer';
 
 @Injectable({
   providedIn: "root"
@@ -9,7 +12,7 @@ export class TreeService {
 
   constructor(private treeParserService: TreeParserService) {}
 
-  getActualTree(){
+  getActualTree() : TreeFile {
     let tree = localStorage.getItem("tree");
     if (tree == null){
         return null;
@@ -19,5 +22,9 @@ export class TreeService {
     }
     
     return JSON.parse(tree).tree;
+  }
+
+  colorizeTree(tree: TreeNode) : ColorizedNode[] {
+    return TreeColorizer.colorize(tree);
   }
 }

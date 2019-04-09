@@ -5,7 +5,7 @@ import {
   TreeContent,
   TreeNode,
   Realisation
-} from "Models/tree/tree";
+} from "Models/tree/Tree";
 
 interface Feature {
   name: string;
