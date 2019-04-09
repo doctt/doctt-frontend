@@ -36,11 +36,11 @@ export class CustomTextareaComponent implements OnInit {
   @ViewChild("editorInner") editor: ElementRef;
   @ViewChild("ftcContainer") ftcContainer: ElementRef;
 
-  private lastMouseDown : number = -1;
-  private isUserSelectingText : boolean = false;
+  private lastMouseDown: number = -1;
+  private isUserSelectingText: boolean = false;
 
   private lastSelection: Range;
-  private lastSelectionTime : number = -1;
+  private lastSelectionTime: number = -1;
   //constructor(private tagService: TagService) {}
   private componentFactory: ComponentFactory<TagComponent>;
 
@@ -55,7 +55,7 @@ export class CustomTextareaComponent implements OnInit {
     this.componentFactory = this.resolver.resolveComponentFactory(TagComponent);
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   @HostListener("document:selectionchange", ["$event.target"])
   selectionChanged(event: Event) {
@@ -65,13 +65,13 @@ export class CustomTextareaComponent implements OnInit {
     if (this.editor.nativeElement.contains(sel.startContainer)) {
       this.lastSelection = sel;
 
-      if(sel.startOffset == sel.endOffset
-        && sel.startContainer == sel.endContainer){
+      if (sel.startOffset == sel.endOffset
+        && sel.startContainer == sel.endContainer) {
         console.log("Selection length is 0");
-        if(this.ftcPortalHost != null && 
-          this.ftcPortalHost.hasAttached){
-            this.ftcPortalHost.detach();
-          }
+        if (this.ftcPortalHost != null &&
+          this.ftcPortalHost.hasAttached) {
+          this.ftcPortalHost.detach();
+        }
       } else {
         console.log("Selection changed");
         this.lastSelectionTime = new Date().getTime();
@@ -80,32 +80,44 @@ export class CustomTextareaComponent implements OnInit {
   }
 
   @HostListener("document:mouseup", ["$event"])
-  mouseUp(event: MouseEvent){
+  mouseUp(event: MouseEvent) {
     // TODO: Handle Keyboard Selection (KEY UP?)
-
-    if (this.editor.nativeElement.contains(event.target)){
+    if (this.editor.nativeElement.contains(event.target)) {
       console.log("Mouse up in our texteditor");
-      if(this.isUserSelectingText){
-        if(this.lastMouseDown < this.lastSelectionTime){
-          console.log("Valid selection :)", this.lastSelection, event);
+      if (this.isUserSelectingText) {
+        if (this.lastMouseDown < this.lastSelectionTime) {
           this.isUserSelectingText = false;
-          this.showFloatingTagChooser(event.pageX, event.pageY);
+
+          let posX = (event.offsetX + 20);
+          let posY = (event.pageY + 10);
+          // Bound Fix
+
+          let margin = 300;
+
+          if (posX > window.innerWidth - margin) {
+            posX = window.innerWidth - margin;
+          }
+
+          if (posX < 0) {
+            posX = 0;
+          }
+
+
+          this.showFloatingTagChooser(posX, posY);
         }
       }
     }
   }
 
   @HostListener("document:mousedown", ["$event.target"])
-  mouseDown(target: HTMLElement){
-    if(this.editor.nativeElement.contains(target)){
+  mouseDown(target: HTMLElement) {
+    if (this.editor.nativeElement.contains(target)) {
       this.isUserSelectingText = true;
       this.lastMouseDown = new Date().getTime();
     }
   }
 
-  showFloatingTagChooser(x: number, y: number){
-    console.log(x, y);
-
+  showFloatingTagChooser(x: number, y: number) {
     if (this.ftcPortalHost == null) {
       this.ftcPortalHost = new DomPortalHost(
         this.ftcContainer.nativeElement,
@@ -115,7 +127,7 @@ export class CustomTextareaComponent implements OnInit {
       );
     } else {
       // Another component may already exist
-      if(this.ftcPortalHost.hasAttached){
+      if (this.ftcPortalHost.hasAttached) {
         this.ftcPortalHost.detach();
       }
     }
