@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Name this file</h1>
+<div mat-dialog-content>
+    <p>Please enter a name for this file</p>
+    <mat-form-field>
+        <input matInput [(ngModel)]="data.title" cdkFocusInitial placeholder="Title">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button color="primary" [mat-dialog-close]="data.title">Ok</button>
+</div>

@@ -11,7 +11,11 @@ import {
   MatIconModule,
   MatChipsModule,
   MatProgressBarModule,
-  MatTreeModule
+  MatTreeModule,
+  MatDialog,
+  MatDialogModule,
+  MatInputModule,
+  MatCardModule
 } from "@angular/material";
 
 import { AppComponent } from "./app.component";
@@ -32,6 +36,12 @@ import { TreeStoringComponent } from "./shared/components/treestoring/treestorin
 import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.component";
 import { FloatingTagChooserComponent } from "./shared/components/floatintagchooser/floatingtagchooser.component";
 import { IconColorDirective } from "./directives/iconcolor/iconcolor.directive";
+import { DocumentComponent } from "./shared/components/document/document.component";
+import { DocumentPreviewComponent } from "./shared/components/documentpreview/document-preview.component";
+import { PageNotFoundComponent } from "./shared/components/pagenotfound/pagenotfound.component";
+import { DocumentUploadTitleDialogComponent } from "./shared/components/documentupload/components/document-upload-title-dialog.component";
+import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -49,6 +59,10 @@ import { IconColorDirective } from "./directives/iconcolor/iconcolor.directive";
     TreeStoringComponent,
     TreeUploadComponent,
     FloatingTagChooserComponent,
+    DocumentComponent,
+    DocumentPreviewComponent,
+    PageNotFoundComponent,
+    DocumentUploadTitleDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -63,10 +77,15 @@ import { IconColorDirective } from "./directives/iconcolor/iconcolor.directive";
     MatSidenavModule,
     MatTreeModule,
     MatChipsModule,
-    PortalModule
+    PortalModule,
+    MatDialogModule,
+    MatInputModule,
+    FormsModule,
+    MatCardModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [TagComponent]
+  entryComponents: [TagComponent, DocumentUploadTitleDialogComponent]
 })
 export class AppModule {}

@@ -1,6 +1,9 @@
 interface Header {
     textfile: string;
+    title: string;
     lang: string;
+    created_on: Date;
+    id: number;
 }
 
 interface Segment {

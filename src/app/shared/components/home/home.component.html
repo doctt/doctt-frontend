@@ -1,14 +1,7 @@
-<button mat-raised-button (click)="count = count + 1">
-    Increment
-</button>
-<span>
-    count: {{count}}
-</span>
-<br/>
-<br/>
-<mat-chip-list>
-    <mat-chip>One fish</mat-chip>
-    <mat-chip>Two fish</mat-chip>
-    <mat-chip color="primary" selected>Primary fish</mat-chip>
-    <mat-chip color="accent" selected>Accent fish</mat-chip>
-</mat-chip-list>
+<h2>Your Documents</h2>
+<div class="documents">
+    <p [hidden]="documents.length != 0">You don't have any documents</p>
+    <div class="documents-container">
+        <doctt-document-preview *ngFor="let document of documents" [document]="document"></doctt-document-preview>
+    </div>
+</div>

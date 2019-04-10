@@ -7,7 +7,7 @@ import { HSLColor } from "Models/hslcolor/HSLColor";
   styleUrls: ["./tag.component.scss"]
 })
 export class TagComponent implements OnInit {
-  private element: HTMLElement;
+  private element: Node;
   @ViewChild("tag") tag: ElementRef | undefined;
   @ViewChild("tagInner") content: ElementRef | undefined;
 
@@ -27,6 +27,7 @@ export class TagComponent implements OnInit {
     if (this.content != undefined) {
       let nativeElement: HTMLElement = this.content.nativeElement;
       nativeElement.appendChild(element);
+      this.element = element;
     }
   }
 

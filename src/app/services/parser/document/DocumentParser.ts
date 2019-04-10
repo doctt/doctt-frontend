@@ -67,7 +67,10 @@ export class DocumentParserService {
     let headerArray = doc.querySelector("header").children;
     let header: Header = {
       textfile: headerArray[0].textContent,
-      lang: headerArray[1].textContent
+      title: "",
+      lang: headerArray[1].textContent,
+      id: -1,
+      created_on: new Date(),
     };
 
     let body: Body = { segments };
