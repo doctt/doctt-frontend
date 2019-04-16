@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, Input, ElementRef, ViewEncapsulation } from '@angular/core';
-import { XmlUploadComponent } from '../xmlupload/xmlupload.component';
 import { DocumentParserService } from 'Services/parser/document/DocumentParser';
 import { File } from 'Models/document/document';
 import { DocumentUploadTitleDialogComponent } from './components/document-upload-title-dialog.component';
 import { MatDialog } from '@angular/material';
 import { DocumentService } from 'Services/document/DocumentService';
+import { Router } from '@angular/router';
+import { XmlUploadComponent } from 'Modules/xml/components/xmlupload/xmlupload.component';
 
 @Component({
   selector: "doctt-documentupload",
@@ -15,7 +16,8 @@ import { DocumentService } from 'Services/document/DocumentService';
 export class DocumentUploadComponent implements OnInit {
   constructor(private documentParserService: DocumentParserService,
     private documentService: DocumentService,
-    private dialog: MatDialog) {}
+    private dialog: MatDialog, 
+    private router: Router) {}
 
   @ViewChild("xmlUpload") xmlUpload: XmlUploadComponent;
   @ViewChild("resultBox") resultBox: ElementRef;
@@ -63,7 +65,9 @@ export class DocumentUploadComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       let title = result;
       file.data.header.title = title;
-      this.documentService.storeFile(file);
+      let id = this.documentService.storeFile(file);
+      this.router.navigateByUrl(`/documents/view/${id}`);
+    
     });
     
   }

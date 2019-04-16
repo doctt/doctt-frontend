@@ -16,7 +16,9 @@
           "*": ["types/*"],
             "Models/*": ["src/app/models/*"],
             "Services/*": ["src/app/services/*"],
-            "Directives/*": ["src/app/directives/*"]
+            "Directives/*": ["src/app/directives/*"],
+            "Components/*": ["src/app/shared/components/*"],
+            "Modules/*": ["src/app/modules/*"]
         },
         "baseUrl": "./",
         "typeRoots": [

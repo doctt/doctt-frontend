@@ -1,5 +1,4 @@
 pre.result-box {
-  display: none;
   outline: 1px solid #ccc;
   padding: 5px;
   margin: 5px;
@@ -18,8 +17,4 @@ pre.result-box {
   .key {
     color: red;
   }
-}
-
-pre.result-box.isActive {
-  display: block;
 }

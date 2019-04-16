@@ -1,3 +1,5 @@
-<doctt-xmlupload #xmlUpload (fileUploaded)="onUpload($event)"></doctt-xmlupload>
-<pre #resultBox class="result-box">
-</pre>
+<h2>Document Upload</h2>
+<p>Please, choose an XML document that was previously exported from UAM Corpus Tool</p>
+
+<doctt-xmlupload name="file" #xmlUpload (fileUploaded)="onUpload($event)"></doctt-xmlupload>
+<pre #resultBox class="result-box" [class.debug]="isActive"></pre>

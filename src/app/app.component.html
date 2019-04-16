@@ -1,12 +1,10 @@
 <mat-drawer-container class="main-container" autosize>
     <mat-drawer #drawer class="main-sidenav" mode="side">
         <ul class="main-menu">
-            <li class="menu-entry" routerLink="/">Home</li>
-            <li class="menu-entry" routerLink="/menu">Menu</li>
-            <li class="menu-entry" routerLink="/editor">Editor</li>
-            <li class="menu-entry" routerLink="/documents/upload">Document Upload</li>
-            <li class="menu-entry" routerLink="/tree">Tree View</li>
-            <li class="menu-entry" routerLink="/trees/upload">Tree Upload</li>
+            <li class="menu-entry" routerLink="/" (click)="drawer.toggle()">Home</li>
+            <li class="menu-entry" routerLink="/documents/upload" (click)="drawer.toggle()">Document Upload</li>
+            <li class="menu-entry" routerLink="/tree" (click)="drawer.toggle()">Tree View</li>
+            <li class="menu-entry" routerLink="/tree/upload" (click)="drawer.toggle()">Tree Upload</li>
         </ul>
     </mat-drawer>
     

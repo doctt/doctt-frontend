@@ -16,7 +16,9 @@ module.exports = {
     alias: {
       Models: helpers.root("src/app/models"),
       Services: helpers.root("src/app/services"),
-      Directives: helpers.root("src/app/directives")
+      Directives: helpers.root("src/app/directives"),
+      Components: helpers.root("src/app/shared/components"),
+      Modules: helpers.root("src/app/modules"),
     }
   },
 

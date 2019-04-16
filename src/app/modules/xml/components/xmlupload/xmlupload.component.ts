@@ -1,12 +1,22 @@
 import { Component, ViewChild, Output, EventEmitter } from "@angular/core";
 import { MatProgressBar } from "@angular/material";
-
+import { FileInputComponent, FileInput } from "ngx-material-file-input";
+import { FormGroup, FormControl } from "@angular/forms";
 @Component({
   selector: "doctt-xmlupload",
   templateUrl: "./xmlupload.component.html",
-  styleUrls: ["./xmlupload.component.scss"]
+  styleUrls: ["./xmlupload.component.scss"],
+  providers: [
+    FileInputComponent
+  ]
 })
 export class XmlUploadComponent {
+  private myFormGroup: FormGroup = new FormGroup({
+    xmlFileUpload: new FormControl()
+  });
+
+  private files : FileInput = null;
+
   private debug: boolean = true;
 
   @ViewChild("progressBar") progressBar: MatProgressBar;
@@ -14,17 +24,26 @@ export class XmlUploadComponent {
   
   @Output('fileUploaded')
   private fileUploaded: EventEmitter<Document> = new EventEmitter<Document>();
+
+  private fileUploadEvent(e : FileInput){
+    this.files = e;
+  }
   
 
   ngOnInit(): void {
     this.progressBar._elementRef.nativeElement.style.display = "hidden";
+    this.myFormGroup.get('xmlFileUpload').valueChanges.subscribe(this.fileUploadEvent.bind(this));
     console.log(this.progressBar);
   }
 
-  load(files: FileList): Promise<Document> {
+  load(): Promise<Document> {
+    if(this.files == null){
+      return null;
+    }
+
     let fileReader = new FileReader();
     this.progressBar._elementRef.nativeElement.style.display = "block";
-    fileReader.readAsText(files[0]);
+    fileReader.readAsText(this.files.files[0]);
 
     let promise = new Promise<Document>((resolve, reject) => {
       this.progress = 0;

@@ -11,10 +11,10 @@
         </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button [routerLink]="'/documents/' + document.header.id">
+        <button mat-button [routerLink]="'/documents/view/' + document.header.id">
             <i class="material-icons">visibility</i> VIEW
         </button>
-        <button mat-button>
+        <button mat-button [routerLink]="'/documents/delete/' + document.header.id">
             <i class="material-icons">delete</i> DELETE
         </button>
     </mat-card-actions>

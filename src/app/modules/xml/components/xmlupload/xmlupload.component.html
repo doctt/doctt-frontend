@@ -1,0 +1,8 @@
+<div class="xml" [formGroup]="myFormGroup">
+    <mat-form-field>
+            <ngx-mat-file-input #cmlfile formControlName="xmlFileUpload" placeholder="Document XML"></ngx-mat-file-input>
+        <mat-icon matSuffix>folder</mat-icon>
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="xml-load" (click)="load()">Load</button>
+    <mat-progress-bar #progressBar mode="determinate" [value]="progress"></mat-progress-bar>
+</div>

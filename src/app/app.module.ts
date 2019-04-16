@@ -12,10 +12,10 @@ import {
   MatChipsModule,
   MatProgressBarModule,
   MatTreeModule,
-  MatDialog,
   MatDialogModule,
   MatInputModule,
-  MatCardModule
+  MatCardModule,
+  MatTableModule,
 } from "@angular/material";
 
 import { AppComponent } from "./app.component";
@@ -29,19 +29,20 @@ import { CustomTextareaComponent } from "./shared/components/textedit/components
 import { PortalModule } from "@angular/cdk/portal";
 import { MatChipFactory } from "./shared/components/matchipfactory/matchipfactory.component";
 import { TagComponent } from "./shared/components/tag/tag.component";
-import { XmlUploadComponent } from "./shared/components/xmlupload/xmlupload.component";
-import { TreeComponent } from "./shared/components/tree/tree.component";
 import { DocumentUploadComponent } from "./shared/components/documentupload/documentupload.component";
-import { TreeStoringComponent } from "./shared/components/treestoring/treestoring.component";
-import { TreeUploadComponent } from "./shared/components/treeupload/treeupload.component";
 import { FloatingTagChooserComponent } from "./shared/components/floatintagchooser/floatingtagchooser.component";
 import { IconColorDirective } from "./directives/iconcolor/iconcolor.directive";
 import { DocumentComponent } from "./shared/components/document/document.component";
 import { DocumentPreviewComponent } from "./shared/components/documentpreview/document-preview.component";
 import { PageNotFoundComponent } from "./shared/components/pagenotfound/pagenotfound.component";
 import { DocumentUploadTitleDialogComponent } from "./shared/components/documentupload/components/document-upload-title-dialog.component";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
+import { DocumentDeleteComponent } from "./shared/components/documentdelete/documentdelete.component";
+import { CdkColumnDef } from "@angular/cdk/table";
+import { TreeModule } from "Modules/tree/tree.module";
+import { XMLModule } from "Modules/xml/xml.module";
+import { DocTTCommonModule } from "Modules/doctt_common/doctt_common.module";
 
 @NgModule({
   declarations: [
@@ -52,23 +53,20 @@ import { CommonModule } from "@angular/common";
     CustomTextareaComponent,
     MatChipFactory,
     IconColorDirective,
-    TagComponent,
-    XmlUploadComponent,
-    TreeComponent,
     DocumentUploadComponent,
-    TreeStoringComponent,
-    TreeUploadComponent,
+    TagComponent,
     FloatingTagChooserComponent,
     DocumentComponent,
     DocumentPreviewComponent,
     PageNotFoundComponent,
-    DocumentUploadTitleDialogComponent
+    DocumentUploadTitleDialogComponent,
+    DocumentDeleteComponent,
   ],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
-    MatButtonModule,
+    MatIconModule,
     MatMenuModule,
     MatToolbarModule,
     MatCheckboxModule,
@@ -76,16 +74,21 @@ import { CommonModule } from "@angular/common";
     MatProgressBarModule,
     MatSidenavModule,
     MatTreeModule,
+    MatTableModule,
     MatChipsModule,
     PortalModule,
     MatDialogModule,
     MatInputModule,
     FormsModule,
     MatCardModule,
-    CommonModule
+    ReactiveFormsModule,
+    TreeModule,
+    XMLModule,
+    DocTTCommonModule
   ],
-  providers: [],
+  providers: [CdkColumnDef],
   bootstrap: [AppComponent],
-  entryComponents: [TagComponent, DocumentUploadTitleDialogComponent]
+  entryComponents: [TagComponent, DocumentUploadTitleDialogComponent,
+  ]
 })
 export class AppModule {}

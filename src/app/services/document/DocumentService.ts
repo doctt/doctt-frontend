@@ -7,6 +7,7 @@ import { Document, File } from 'Models/document/document';
 export class DocumentService {
     private documents: Document[];
     private static LS_TAG = 'documents';
+    private last_id : number  = -1;
 
     public loadDocuments() : Document[] {
         let docs = [];
@@ -18,9 +19,12 @@ export class DocumentService {
             }
         }
 
-        for(let i=0; i<docs; i++){
+        for(let i=0; i<docs.length; i++){
             docs[i].header.id = i;
         }
+
+        this.last_id = docs.length;
+        this.documents = docs;
 
         return docs;
     }
@@ -29,7 +33,24 @@ export class DocumentService {
         localStorage.setItem(DocumentService.LS_TAG, JSON.stringify(docs));
     }
 
-    public storeFile(file: File){
+    public getDocument(id: number): Document {
+        if(this.documents == null){
+            this.loadDocuments();
+        }
+
+        for(let doc of this.documents){
+            if(doc.header.id == id){
+                return doc;
+            } 
+        }
+
+        return null;
+    }
+
+    /*
+        Stores the given file, returns its id
+    */
+    public storeFile(file: File) : Number {
         if(file.version != 1){
             console.error('DocTT', 'Invalid file version, refusing to store.');
             return;
@@ -37,6 +58,9 @@ export class DocumentService {
 
         // Get document
         this.documents = this.loadDocuments();
+        file.data.header.id = this.last_id;
+        this.last_id++;
+
         this.documents.push(file.data);
         this.storeDocuments(this.documents);
     }

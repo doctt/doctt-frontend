@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, Input, ElementRef, ViewEncapsulation } from '@angular/core';
-import { XmlUploadComponent } from '../xmlupload/xmlupload.component';
 import { TreeFile } from 'Models/tree/Tree';
 import { TreeParserService } from 'Services/parser/tree/TreeParser';
-import { TreeComponent } from '../tree/tree.component';
+import { TreeComponent } from 'Components/tree/tree.component';
+import { XmlUploadComponent } from 'Modules/xml/components/xmlupload/xmlupload.component';
 
 @Component({
   selector: "doctt-treeupload",
@@ -16,6 +16,8 @@ export class TreeUploadComponent implements OnInit {
   @ViewChild("xmlUpload") xmlUpload: XmlUploadComponent;
   @ViewChild("resultBox") resultBox: ElementRef;
   @ViewChild("tree") treeComponent: TreeComponent;
+
+  private debug : boolean = false;
 
   ngOnInit(): void {}
 

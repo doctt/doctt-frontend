@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { HSLColor } from "Models/hslcolor/HSLColor";
+import { ColorizedNode } from "Models/tree/ColorizedTree";
 
 @Component({
   selector: "doctt-tag",
@@ -8,6 +9,8 @@ import { HSLColor } from "Models/hslcolor/HSLColor";
 })
 export class TagComponent implements OnInit {
   private element: Node;
+  private tagNode: ColorizedNode;
+
   @ViewChild("tag") tag: ElementRef | undefined;
   @ViewChild("tagInner") content: ElementRef | undefined;
 
@@ -31,8 +34,13 @@ export class TagComponent implements OnInit {
     }
   }
 
-  setColor(color: HSLColor){
+  private setColor(color: HSLColor){
     this.tag.nativeElement.style.backgroundColor = color.toCSS();
+  }
+
+  setTag(tag: ColorizedNode) {
+    this.setColor(tag.color);
+    this.tagNode = tag;  
   }
 
   

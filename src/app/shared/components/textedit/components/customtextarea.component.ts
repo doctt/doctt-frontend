@@ -28,6 +28,11 @@ import { isFakeMousedownFromScreenReader } from "@angular/cdk/a11y";
 import { FloatingTagChooserComponent } from "../../floatintagchooser/floatingtagchooser.component";
 import { Event } from "@angular/router";
 import { Tag } from "Models/tag/Tag";
+import { Document } from "Models/document/document";
+import { TreeContent, TreeFile, TreeNode } from "Models/tree/Tree";
+import { ColorizedNode } from "Models/tree/ColorizedTree";
+import { TreeService } from "Services/tree/Tree";
+import { isFulfilled } from "q";
 
 @Component({
   selector: "custom-textarea",
@@ -52,7 +57,8 @@ export class CustomTextareaComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private resolver: ComponentFactoryResolver,
     private injector: Injector,
-    private appRef: ApplicationRef
+    private appRef: ApplicationRef,
+    private treeService: TreeService
   ) {
     this.componentFactory = this.resolver.resolveComponentFactory(TagComponent);
   }
@@ -231,11 +237,95 @@ export class CustomTextareaComponent implements OnInit {
 
       let element: ComponentRef<TagComponent> = ref;
       element.instance.setContent(content);
-      element.instance.setColor(tag.color);
+      element.instance.setTag(tag);
     } else {
       console.log(
         "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
       );
+    }
+  }
+
+  private findTagByFeatures(n: ColorizedNode, features: string[]) : ColorizedNode {
+    if (n.name.toUpperCase() == n.name) {
+
+      if(features.length == 0){
+        return null;
+      }
+
+      // Looks like a -TYPE node, skip it
+      let node = null;
+      for(let c of n.children){
+        if(c.name == features[0]){
+          return this.findTagByFeatures(c, features);
+        }
+      }
+      
+      if(node == null){
+        return null;
+      }
+    }
+    
+    if(n.name != features[0]){
+      return null;
+    }
+
+    if(features.length == 1){
+     return n; 
+    }
+
+    for (let c of n.children) {
+      let lastN = this.findTagByFeatures(c, features.splice(1));
+      if(lastN != null){
+        return lastN;
+      }
+    }
+  }
+
+  load(d: Document, t: TreeFile) {
+    console.log('Editor: Loading...');
+
+    if(t.version != 1){
+      console.error('Invalid Tree version');
+      return;
+    }
+
+    let ct = this.treeService.colorizeTree(t.data.root)[0];
+
+    let el : HTMLElement = this.editor.nativeElement;
+    
+    for(let s of d.body.segments){
+      let divSegment  = document.createElement('div');
+      divSegment.className = "segment-container"; 
+
+      if(s.features.length == 0){
+        divSegment.innerHTML = s.text.replace(/\n/g, '<br/>');
+      } else {
+        let spanEl = document.createElement('span');
+        spanEl.innerText = s.text;
+
+
+        let portal = new ComponentPortal(TagComponent);
+        let portalHost = new DomPortalHost(
+          divSegment,
+          this.resolver,
+          this.appRef,
+          this.injector
+        );
+        let ref = portalHost.attachComponentPortal(portal);
+
+        let tag = this.findTagByFeatures(ct, s.features);
+
+        if(tag == null){
+          console.error("Invalid tag!");
+          return;
+        }
+
+        let element: ComponentRef<TagComponent> = ref;
+        element.instance.setContent(spanEl);
+        element.instance.setTag(tag);
+      }
+
+      el.appendChild(divSegment);  
     }
   }
 }
