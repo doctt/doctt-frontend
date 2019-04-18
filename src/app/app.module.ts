@@ -89,6 +89,7 @@ import { DocTTCommonModule } from "Modules/doctt_common/doctt_common.module";
   providers: [CdkColumnDef],
   bootstrap: [AppComponent],
   entryComponents: [TagComponent, DocumentUploadTitleDialogComponent,
+    FloatingTagChooserComponent
   ]
 })
 export class AppModule {}
