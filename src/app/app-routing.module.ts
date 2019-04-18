@@ -10,6 +10,7 @@ import { DocumentComponent } from './shared/components/document/document.compone
 import { PageNotFoundComponent } from './shared/components/pagenotfound/pagenotfound.component';
 import { DocumentDeleteComponent } from './shared/components/documentdelete/documentdelete.component';
 import { TreeModule } from 'Modules/tree/tree.module';
+import { FloatingTagChooserComponent } from 'Components/floatintagchooser/floatingtagchooser.component';
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
   { path: "documents/upload", component: DocumentUploadComponent },
   { path: "documents/view/:id", component: DocumentComponent },
   { path: "documents/delete/:id", component: DocumentDeleteComponent },
+  { path: "dev/ftc", component: FloatingTagChooserComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
 

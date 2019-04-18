@@ -1,10 +1,10 @@
 .ftc {
-    $width: 250px;
+    $width: 200px;
     $height: 100px;
 
     $radius: 5px;
     border-radius: $radius; 
-    width: $width;
+    min-width: $width;
     min-height: $height;
     background-color: #FAFAFA;
     box-shadow: 0px 2px 7px 0px #999;
@@ -20,17 +20,20 @@
             $rowHeight: 30px;
             height: $rowHeight;
             overflow: hidden;
+            display: grid;
+            grid-template-columns: 25px auto 25px;
+            column-gap: 5px;
 
             &:last-child {
                 border-bottom: 0;
             }
 
             div.icon {
-                float: left;
                 user-select: none;
                 padding-top: ($rowHeight - 24px) / 2;
                 line-height: 24px;
                 height: 24px;
+                overflow: hidden;
                 i.color-red{
                     color: #f44336;
                 }
@@ -45,7 +48,6 @@
             }
 
             div.name {
-                float: left;
                 height: $rowHeight;
                 line-height: $rowHeight;
                 margin-left: 0.5em;
@@ -54,9 +56,9 @@
             }
 
             div.icon-next {
-                float: right;
                 height: $rowHeight;
                 line-height: $rowHeight;
+                overflow: hidden;
             }
         }
 
