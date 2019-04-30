@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<document>
+    <header>
+        <textfile>filename.txt</textfile>
+        <lang>italian</lang>
+    </header>
+    <body>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Vestibulum consectetur pellentesque neque sit amet facilisis.
+        Nested lvl 0
+        
+        <segment id='1' features='f3' state='active'>
+            Nested lvl 1
+            <segment id='15' features='f1' state='active' parent='1'>
+                Donec et purus dui. Phasellus efficitur sed metus id convallis.
+            </segment>
+            <segment id='16' features='f1;f2' state='active' parent='1'>
+                Integer vel augue sit amet purus vestibulum bibendum.
+            </segment>
+            <segment id='17' features='f5' state='active' parent='1'>
+                Nested lvl 2
+                <segment id='18' features='f8' state='active' parent='17'>
+                    Nested lvl 3
+                </segment>
+            </segment>
+        </segment>
+    </body>
+</document>

@@ -9,19 +9,20 @@ test('createSegment', ()=>{
         id: 1,
         features: ["feat1", "feat2"],
         state: "active",
-        text: "content"
+        text: "",
+        children: [],
     };
 
-    expect(doc.createSegment(["feat1", "feat2"], 1, "active", "content"))
+    expect(doc.createSegment(["feat1", "feat2"], 1, "active", [], []))
     .toEqual(seg);
 });
 
 test('parseXML', ()=>{
     let dps: DocumentParserService = new DocumentParserService();
-    let xml1 = fs.readFileSync("resources/test/xml/document1.xml").toString();
+    let xml = fs.readFileSync("resources/test/xml/document1.xml").toString();
 
     let doc: Document = (new DOMParser()).parseFromString(
-      xml1,
+      xml,
       "application/xml"
     );
     
@@ -41,11 +42,9 @@ test('parseXML', ()=>{
 
 test('parseXML2', () => {
     let dps: DocumentParserService = new DocumentParserService();
-    let xml1 = fs.readFileSync("resources/test/xml/document2.xml").toString();
+    let xml = fs.readFileSync("resources/test/xml/document2.xml").toString();
 
-    let doc: Document = (new DOMParser()).parseFromString(
-        xml1,
-        "application/xml"
+    let doc: Document = (new DOMParser()).parseFromString(xml,"application/xml"
     );
 
     let file = dps.parseXML(doc);
@@ -60,4 +59,22 @@ test('parseXML2', () => {
     expect(file.data.body.segments[1].text).toEqual(
         "Greetings, and welcome to the Microsoft Fiscal Year 2019 First Quarter Earnings Conference Call. As a reminder, this conference is being recorded. It is now my pleasure to introduce your host, Mike Spencer, General Manager, Investor Relations. Thank you. You may begin."
     );
+});
+
+test('parseXML3', () => {
+    let dps: DocumentParserService = new DocumentParserService();
+    let xml = fs.readFileSync("resources/test/xml/document3.xml").toString();
+
+    let doc: Document = (new DOMParser()).parseFromString(
+        xml,
+        "application/xml"
+    );
+
+    let file = dps.parseXML(doc);
+    expect(file.version).toBe(1);
+    expect(file.data).toBeDefined();
+    expect(file.data.header.textfile).toBe("filename.txt");
+    expect(file.data.header.lang).toBe("italian");
+    expect(file.data.body.segments.length).toBe(3);
+    expect(file.data.body.segments[1].children.length).toBe(3);
 });

@@ -11,6 +11,7 @@ interface Segment {
     id: number;
     state: string;
     text: string;
+    children: Segment[];
 }
 
 interface Body {
