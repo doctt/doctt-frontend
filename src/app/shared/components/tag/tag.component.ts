@@ -106,46 +106,96 @@ export class TagComponent implements OnInit {
    if(target.className == "tag")
     tagInner = target.children[0];
 
-    let father;
-    father = spanContainer.parentElement;
-    let spanContLength = spanContainer.children.length;
-    console.log("span cont children");
-    for(let k = 0; k < spanContainer.children.length; k++){
-      let child = spanContainer.children[k];
-      console.log(child);
-    }
+   let father;
+   father = spanContainer.parentElement;
+   let spanContLength = spanContainer.children.length;
+   /*console.log("span cont children");
+   for(let k = 0; k < spanContainer.children.length; k++){
+     let child = spanContainer.children[k];
+     console.log(child);
+   }
+   */
+   console.log("dio ", spanContainer.children);
 
-    console.log("dio ", spanContainer.children);
+   let counter = 0;
+   let docFragment = document.createDocumentFragment();
+   console.log("spancon children", spanContainer.childNodes);
+    spanContainer.childNodes.forEach((e,k,p)=>{
+      let child : any = e;
+      let tmp : Element = child;
+    
+      console.log("child", e);
+      console.log(counter++);
 
-    for(let k = 0; k < spanContLength; k++){
-      let child = spanContainer.children[0];
-      console.log("span cont child ", child);
-
-      if(child.tagName == "SPAN"){
-        father.append(child);
-        console.log("append normal span");
+      if(tmp.tagName == "SPAN"){
+        let node = tmp.cloneNode(true);
+        console.log("node : ",node);
+        docFragment.append(node);
       }else{
-        console.log("tagInner cicle");
-        let tagInnerLength = tagInner.children.length;
+        console.log("not a span");
+        tagInner.childNodes.forEach((e,k,p)=>{
+          let innerChild = e.cloneNode(true);
+          docFragment.append(innerChild);
+         });
+      }
+    });
+    
+    console.log("span father ", father);
+    /*
+   for(let k = 0; k < spanContLength; k++){
+     let child = spanContainer.children[0];
+     console.log("span cont child ", child);
+    
+     if(child.tagName == "SPAN"){
+       docFragment.append(child);
+        //father.insertBefore(child, spanContainer);
+       //father.append(child);
+       console.log("append normal span");
+     }else{
+      tagInner.childNodes.forEach((e,k,p)=>{
+        docFragment.append(e);
+       });
+       /*
+       console.log("tagInner cicle");
+       let tagInnerLength = tagInner.children.length;
+       let brs = true;
+       for(let i = 0; i < tagInnerLength; i++){
+        let maybebr = tagInner.children[i];
+        if(maybebr.tagName != "BR"){
+          brs = false;
+        }
+      }
+       if(tagInnerLength != 0 && !brs){
         for(let i = 0; i < tagInnerLength; i++){
           let a = tagInner.children[0];
           console.log("tagInner child ", a);
-          father.append(a);
+          //father.append(a);
+          father.insertBefore(a, spanContainer);
           console.log("append tag inner child");
         }
         spanContainer.removeChild(child);
+      }else{
+        console.log("Text Only");
+        let txtToSpan = document.createElement("span");
+        txtToSpan.innerHTML = tagInner.innerHTML;
+        father.insertBefore(txtToSpan, spanContainer);
       }
-    }
-    
-    
-    
+      
+     }
+   }*/
+   console.log("doc frag ", docFragment.childNodes);
+   docFragment.childNodes.forEach(e => {
+    console.log(e);
+   });
+    //spanContainer.append(docFragment);
+    father.insertBefore(docFragment, spanContainer);
     father.removeChild(spanContainer);
-
+    /*
     console.log("path ",path);
     console.log("taginner ",tagInner);
     console.log("spancontainer ",spanContainer);
     console.log("full text ", finalspan.innerHTML);
-
+    */
     //if(path[1])
   }
 
