@@ -33,6 +33,7 @@ import { TreeContent, TreeFile, TreeNode } from "Models/tree/Tree";
 import { ColorizedNode } from "Models/tree/ColorizedTree";
 import { TreeService } from "Services/tree/Tree";
 import { isFulfilled } from "q";
+import { DialogService } from "Services/userfeedback/DialogService";
 
 @Component({
   selector: "custom-textarea",
@@ -58,7 +59,8 @@ export class CustomTextareaComponent implements OnInit {
     private resolver: ComponentFactoryResolver,
     private injector: Injector,
     private appRef: ApplicationRef,
-    private treeService: TreeService
+    private treeService: TreeService,
+    private dialogService: DialogService
   ) {
     this.componentFactory = this.resolver.resolveComponentFactory(TagComponent);
   }
@@ -283,6 +285,13 @@ export class CustomTextareaComponent implements OnInit {
 
   load(d: Document, t: TreeFile) {
     console.log('Editor: Loading...');
+
+    if(t == null){
+      console.error("Cannot load a document without a corresponding TreeFile");
+      this.dialogService.error("Unable to open this document",
+        "In order to open this document, you need to select / upload a tree first!");
+      return;
+    }
 
     if(t.version != 1){
       console.error('Invalid Tree version');

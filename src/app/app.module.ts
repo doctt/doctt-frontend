@@ -43,6 +43,7 @@ import { CdkColumnDef } from "@angular/cdk/table";
 import { TreeModule } from "Modules/tree/tree.module";
 import { XMLModule } from "Modules/xml/xml.module";
 import { DocTTCommonModule } from "Modules/doctt_common/doctt_common.module";
+import { ErrorDialogComponent } from "Components/dialogs/errordialog/errordialog.component";
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { DocTTCommonModule } from "Modules/doctt_common/doctt_common.module";
     PageNotFoundComponent,
     DocumentUploadTitleDialogComponent,
     DocumentDeleteComponent,
+    ErrorDialogComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -89,7 +91,7 @@ import { DocTTCommonModule } from "Modules/doctt_common/doctt_common.module";
   providers: [CdkColumnDef],
   bootstrap: [AppComponent],
   entryComponents: [TagComponent, DocumentUploadTitleDialogComponent,
-    FloatingTagChooserComponent
+    FloatingTagChooserComponent, ErrorDialogComponent
   ]
 })
 export class AppModule {}
