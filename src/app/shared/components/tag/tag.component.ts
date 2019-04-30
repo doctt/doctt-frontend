@@ -105,23 +105,32 @@ export class TagComponent implements OnInit {
 
     let father;
     father = spanContainer.parentElement;
-
-
+    let spanContLength = spanContainer.children.length;
+    console.log("span cont children");
     for(let k = 0; k < spanContainer.children.length; k++){
       let child = spanContainer.children[k];
+      console.log(child);
+    }
+
+    console.log("dio ", spanContainer.children);
+
+    for(let k = 0; k < spanContLength; k++){
+      let child = spanContainer.children[0];
+      console.log("span cont child ", child);
+
       if(child.tagName == "SPAN"){
-        console.log("span cont child ", child);
         father.append(child);
-        console.log("child appended");
-      }
-      console.log("span cont child tag name", child.tagName);
-      if(child.tagName != "SPAN"){
+        console.log("append normal span");
+      }else{
         console.log("tagInner cicle");
-        for(let i = 0; i < tagInner.children.length; i++){
-          let a = tagInner.children[i];
+        let tagInnerLength = tagInner.children.length;
+        for(let i = 0; i < tagInnerLength; i++){
+          let a = tagInner.children[0];
           console.log("tagInner child ", a);
           father.append(a);
+          console.log("append tag inner child");
         }
+        spanContainer.removeChild(child);
       }
     }
     
