@@ -17,7 +17,7 @@ export class XmlUploadComponent {
 
   private files : FileInput = null;
 
-  private debug: boolean = true;
+  private debug: boolean = false;
 
   @ViewChild("progressBar") progressBar: MatProgressBar;
   private progress: number;
@@ -33,7 +33,6 @@ export class XmlUploadComponent {
   ngOnInit(): void {
     this.progressBar._elementRef.nativeElement.style.display = "hidden";
     this.myFormGroup.get('xmlFileUpload').valueChanges.subscribe(this.fileUploadEvent.bind(this));
-    console.log(this.progressBar);
   }
 
   load(): Promise<Document> {
