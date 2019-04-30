@@ -63,6 +63,7 @@ export class DocumentService {
 
         this.documents.push(file.data);
         this.storeDocuments(this.documents);
+        return file.data.header.id;
     }
 
     public removeAll(){
