@@ -33,4 +33,7 @@ testem.log
 #System Files
 .DS_Store
 
+# Visual Studio Code
+.vscode
+
 # End of https://www.gitignore.io/api/angular
