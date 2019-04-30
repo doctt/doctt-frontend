@@ -47,7 +47,7 @@ export class TagComponent implements OnInit {
           console.log("multi line");
         }
       }
-      if(el.className == "span-container" && spanContainer == null){
+      if(el.className == "span-container"){
         spanContainer = el;
       } 
       if(el.tagName =="DOCTT-TAG" && doctttag == null){
@@ -120,6 +120,7 @@ export class TagComponent implements OnInit {
    let counter = 0;
    let docFragment = document.createDocumentFragment();
    console.log("spancon children", spanContainer.childNodes);
+   let arrayClone = spanContainer.childNodes
     spanContainer.childNodes.forEach((e,k,p)=>{
       let child : any = e;
       let tmp : Element = child;
