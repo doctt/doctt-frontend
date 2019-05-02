@@ -123,10 +123,10 @@ export class CustomTextareaComponent implements OnInit {
     }
   }
 
-  tagSelectionHandler(tag: Tag){
+  tagSelectionHandler(tag: Tag) {
     // Close FTC, apply tag
 
-    if(this.ftcPortalHost != null){
+    if (this.ftcPortalHost != null) {
       this.ftcPortalHost.detach();
     }
 
@@ -201,8 +201,6 @@ export class CustomTextareaComponent implements OnInit {
 
         element_container = selectionContainer;
         content = t2_span;
-
-        console.log(text1, " == ", text2, " == ", text3);
       } else {
         // Multi line selection
         span_container = document.createElement("div");
@@ -240,6 +238,9 @@ export class CustomTextareaComponent implements OnInit {
       let element: ComponentRef<TagComponent> = ref;
       element.instance.setContent(content);
       element.instance.setTag(tag);
+
+      console.log(span_container, tag);
+
     } else {
       console.log(
         "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
@@ -247,38 +248,40 @@ export class CustomTextareaComponent implements OnInit {
     }
   }
 
-  private findTagByFeatures(n: ColorizedNode, features: string[]) : ColorizedNode {
+  private findTagByFeatures(n: ColorizedNode, features: string[]): ColorizedNode {
     if (n.name.toUpperCase() == n.name) {
 
-      if(features.length == 0){
+      if (features == undefined || features.length == 0) {
         return null;
       }
 
       // Looks like a -TYPE node, skip it
       let node = null;
-      for(let c of n.children){
-        if(c.name == features[0]){
+      for (let c of n.children) {
+        if (c.name == features[0]) {
           return this.findTagByFeatures(c, features);
         }
       }
-      
-      if(node == null){
+
+      if (node == null) {
         return null;
       }
     }
-    
-    if(n.name != features[0]){
+
+    if (n.name != features[0]) {
       return null;
     }
 
-    if(features.length == 1){
-     return n; 
+    if (features.length == 1) {
+      return n;
     }
 
-    for (let c of n.children) {
-      let lastN = this.findTagByFeatures(c, features.splice(1));
-      if(lastN != null){
-        return lastN;
+    if (n.children != null) {
+      for (let c of n.children) {
+        let lastN = this.findTagByFeatures(c, features.splice(1));
+        if (lastN != null) {
+          return lastN;
+        }
       }
     }
   }
@@ -286,27 +289,27 @@ export class CustomTextareaComponent implements OnInit {
   load(d: Document, t: TreeFile) {
     console.log('Editor: Loading...');
 
-    if(t == null){
+    if (t == null) {
       console.error("Cannot load a document without a corresponding TreeFile");
       this.dialogService.error("Unable to open this document",
         "In order to open this document, you need to select / upload a tree first!");
       return;
     }
 
-    if(t.version != 1){
+    if (t.version != 1) {
       console.error('Invalid Tree version');
       return;
     }
 
     let ct = this.treeService.colorizeTree(t.data.root)[0];
 
-    let el : HTMLElement = this.editor.nativeElement;
-    
-    for(let s of d.body.segments){
-      let divSegment  = document.createElement('div');
-      divSegment.className = "segment-container"; 
+    let el: HTMLElement = this.editor.nativeElement;
 
-      if(s.features.length == 0){
+    for (let s of d.body.segments) {
+      let divSegment = document.createElement('div');
+      divSegment.className = "segment-container";
+
+      if (s.features.length == 0) {
         divSegment.innerHTML = s.text.replace(/\n/g, '<br/>');
       } else {
         let spanEl = document.createElement('span');
@@ -320,21 +323,23 @@ export class CustomTextareaComponent implements OnInit {
           this.appRef,
           this.injector
         );
-        let ref = portalHost.attachComponentPortal(portal);
 
+        let ref = portalHost.attachComponentPortal(portal);
         let tag = this.findTagByFeatures(ct, s.features);
 
-        if(tag == null){
+        if (tag == null) {
           console.error("Invalid tag!");
           return;
         }
+
+        console.log("Setting tag to " + tag);
 
         let element: ComponentRef<TagComponent> = ref;
         element.instance.setContent(spanEl);
         element.instance.setTag(tag);
       }
 
-      el.appendChild(divSegment);  
+      el.appendChild(divSegment);
     }
   }
 }

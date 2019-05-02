@@ -1,20 +1,20 @@
 <mat-card class="document-container">
     <mat-card-header>
-        <mat-card-title>{{ document.header.title }}</mat-card-title>
-        <mat-card-subtitle>Created on {{ parseDate(document.header.created_on) }}</mat-card-subtitle>
+        <mat-card-title>{{ doc.header.title }}</mat-card-title>
+        <mat-card-subtitle>Created on {{ parseDate(doc.header.created_on) }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
         <div class="body">
-            <div class="segment" *ngFor="let sgm of document.body.segments.splice(0,2)">
+            <div class="segment" *ngFor="let sgm of segments">
                 <p>{{ sgm.text }} </p>
             </div>
         </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button [routerLink]="'/documents/view/' + document.header.id">
+        <button mat-button [routerLink]="'/documents/view/' + doc.header.id">
             <i class="material-icons">visibility</i> VIEW
         </button>
-        <button mat-button [routerLink]="'/documents/delete/' + document.header.id">
+        <button mat-button [routerLink]="'/documents/delete/' + doc.header.id">
             <i class="material-icons">delete</i> DELETE
         </button>
     </mat-card-actions>

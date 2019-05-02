@@ -2,6 +2,6 @@
 <div class="documents">
     <p [hidden]="documents.length != 0">You don't have any documents</p>
     <div class="documents-container">
-        <doctt-document-preview *ngFor="let document of documents" [document]="document"></doctt-document-preview>
+        <doctt-document-preview *ngFor="let document of documents" [doc]="document"></doctt-document-preview>
     </div>
 </div>

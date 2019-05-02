@@ -1,3 +1,5 @@
-<div #tag class="tag" (click)="onClick($event)" (mouseover)="onMouseOver($event)">
+<div #tag class="tag" (click)="onClick($event)" (mouseover)="onMouseOver($event)"
+            [matTooltip]="tooltip"
+>
     <div #tagInner class="tag-inner"></div>
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Document as DocTTDocument } from 'Models/document/document';
+import { Document as DocTTDocument, Segment } from 'Models/document/document';
 
 @Component({
     selector: 'doctt-document-preview',
@@ -8,13 +8,26 @@ import { Document as DocTTDocument } from 'Models/document/document';
 })
 export class DocumentPreviewComponent implements OnInit {
     @Input() 
-    private document: DocTTDocument;
+    private doc: DocTTDocument;
+    private segments : Segment[];
     
     constructor() { 
     }
 
-    ngOnInit(): void { 
-        console.log(this.document);
+    ngOnInit(): void {
+        let c = 0; 
+        let segments = [];
+        for(let s of this.doc.body.segments){
+            if(c == 5){
+                break;
+            }
+            if(s.text.trim() != ""){
+                segments.push(s);
+                c++;
+            }
+        }
+
+        this.segments = segments;
     }
 
     parseDate(date: string) : string {
