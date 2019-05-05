@@ -1,3 +1,9 @@
-<h3>Delete Document</h3>
+<h2>Delete Document</h2>
+<doctt-document-preview [doc]="document" [showButtons]="false"></doctt-document-preview>
 
 <p>Are you sure to delete this document?</p>
+
+<div class="button-actions">
+    <button mat-raised-button color="warn" (click)="doDelete()">Yes</button>
+    <button mat-raised-button (click)="goBack()">No</button>
+</div>

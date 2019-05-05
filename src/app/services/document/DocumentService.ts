@@ -69,4 +69,20 @@ export class DocumentService {
     public removeAll(){
         localStorage.removeItem(DocumentService.LS_TAG);
     }
+
+    public removeDocument(id: number) {
+        this.documents = this.loadDocuments();
+        let idx = -1;
+        for(let d of this.documents){
+            if(d.header.id == id){
+                idx = this.documents.indexOf(d);
+            }
+        }
+
+        if(idx != -1){
+            this.documents.splice(idx, 1);
+        }
+        
+        this.storeDocuments(this.documents);
+    }
 }

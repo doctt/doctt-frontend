@@ -10,6 +10,9 @@ export class DocumentPreviewComponent implements OnInit {
     @Input() 
     private doc: DocTTDocument;
     private segments : Segment[];
+
+    @Input()
+    private showButtons : boolean = true;
     
     constructor() { 
     }

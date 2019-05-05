@@ -1,16 +1,18 @@
 <mat-card class="document-container">
     <mat-card-header>
-        <mat-card-title>{{ doc.header.title }}</mat-card-title>
+        <mat-card-title>{{ doc.header.title || "No title" }}</mat-card-title>
         <mat-card-subtitle>Created on {{ parseDate(doc.header.created_on) }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
         <div class="body">
-            <div class="segment" *ngFor="let sgm of segments">
-                <p>{{ sgm.text }} </p>
+            <div class="segments-container">
+                <div class="segment" *ngFor="let sgm of segments">
+                    <p>{{ sgm.text }} </p>
+                </div>
             </div>
         </div>
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions *ngIf="showButtons">
         <button mat-button [routerLink]="'/documents/view/' + doc.header.id">
             <i class="material-icons">visibility</i> VIEW
         </button>
