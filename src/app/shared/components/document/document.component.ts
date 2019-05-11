@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Document } from 'Models/document/document';
+import { Document, File, Header } from 'Models/document/document';
 import { ActivatedRoute } from '@angular/router';
 import { DocumentService } from 'Services/document/DocumentService';
+import { ExportService } from 'Services/document/ExportService';
 import { Observable } from 'rxjs';
 import { CustomTextareaComponent } from '../textedit/components/customtextarea.component';
 import { ColorizedTree } from 'Models/tree/ColorizedTree';
@@ -38,6 +39,7 @@ export class DocumentComponent implements OnInit, AfterViewInit {
 
     constructor(private route: ActivatedRoute,
         private documentService: DocumentService,
+        private exportService : ExportService,
         private treeService: TreeService) {
             this.tree = treeService.getActualTree();
     }
@@ -55,6 +57,14 @@ export class DocumentComponent implements OnInit, AfterViewInit {
         }
 
         return key;
+    }
+
+    export(document : Document){
+        const file : File = {
+            version: 1.0, 
+            data : document
+        }
+        this.exportService.export(file);
     }
 
     ngOnInit(): void {
