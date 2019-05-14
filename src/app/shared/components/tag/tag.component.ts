@@ -38,7 +38,7 @@ export class TagComponent implements OnInit {
       if (el.className == "tag-inner" && tagInner == null) {
         tagInner = el;
       } 
-      if (el.className == "span-container" && spanContainer == null) {
+      if (el.className == "segment-container" && spanContainer == null) {
         spanContainer = el;
       }
       if (el.tagName == "DOCTT-TAG" && doctttag == null) {

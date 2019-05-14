@@ -232,7 +232,7 @@ export class CustomTextareaComponent implements OnInit {
         content = frag;
       }
 
-      span_container.className = "span-container";
+      span_container.className = "segment-container";
       node.parentNode.replaceChild(span_container, node);
 
       node = span_container;
@@ -308,7 +308,7 @@ export class CustomTextareaComponent implements OnInit {
         if(child.tagName != "DIV"){
           tagText += v.textContent;
         }
-        if(child.className == "span-container"){
+        if(child.className == "segment-container"){
           children.push(this.addSegToStructure(span_container,
             startOffset,
             endOffset,
@@ -500,7 +500,8 @@ export class CustomTextareaComponent implements OnInit {
 
     if (n.children != null) {
       for (let c of n.children) {
-        let lastN = this.findTagByFeatures(c, features.splice(1));
+        let new_feats = features.slice(0);
+        let lastN = this.findTagByFeatures(c, new_feats.splice(1));
         if (lastN != null) {
           return lastN;
         }
@@ -564,6 +565,7 @@ export class CustomTextareaComponent implements OnInit {
     let ref = portalHost.attachComponentPortal(portal);
 
     console.log("Features: ", s.features);
+    console.log("Segment: ", s);
 
     let tag = this.findTagByFeatures(ct, s.features);
 

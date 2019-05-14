@@ -39,7 +39,7 @@ export class FloatingTagChooserComponent implements OnInit {
         features.push(node.name);
         features.push(...this.getFeatures(node.parent));
 
-        return features;
+        return features.reverse();
     }
 
     private selectNode(node: ColorizedNode){
