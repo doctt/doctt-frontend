@@ -330,7 +330,7 @@ export class CustomTextareaComponent implements OnInit {
         text : tagText
       }
 
-      debugger;
+      //debugger;
       let segmentID = Number.parseInt(span_container.parentElement.getAttribute("data-segment-id"));
       
       console.log("docseg ", segmentID);
@@ -341,8 +341,9 @@ export class CustomTextareaComponent implements OnInit {
         startOffset,
         endOffset,
         this.lastSegmentId,
-        segment);
-
+        segment,
+        span_container);
+      this.lastSegmentId += 2;
       console.log("docseg children", segment.children);
 
       actualDoc = this.replaceSegmentInDocument(actualDoc, segment);
@@ -394,11 +395,28 @@ export class CustomTextareaComponent implements OnInit {
     return segments;
   }
 
-  private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment) : Segment{
-    let before = segmentParent.text.substr(0, offsetStart);
-    let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
-    let end = segmentParent.text.substr(offsetEnd, segmentParent.text.length);
+  private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment, span_container : Node) : Segment{
+    let parent_childNodes = span_container.parentElement.childNodes;
+    let offs = 0;
+    for(let i = 0; i < parent_childNodes.length; i++){
+      let child = <HTMLElement> parent_childNodes[i];
+      if(child.className == "span-container"){
+        break;
+      }
+      offs += child.innerHTML.length;
+    }
+    offsetStart += offs;
+    offsetEnd += offs;
+    let before = segmentParent.text.substring(0, offsetStart);
+    //let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
+    let end = segmentParent.text.substring(offsetEnd, segmentParent.text.length);
 
+    console.log("seg parent text -> ", segmentParent.text);
+    console.log("selected text -> ", segmentParent.text.substring(offsetStart, offsetEnd));
+    console.log("offset start -> ", offsetStart);
+    console.log("offset end -> ", offsetEnd);
+    console.log("text before -> ", before);
+    console.log("text after-> ", end);
     let segBefore : Segment= {
       children : [],
       id : nextID,
