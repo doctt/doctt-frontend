@@ -9,7 +9,8 @@ import {
   ComponentFactory,
   Injector,
   ApplicationRef,
-  ComponentRef
+  ComponentRef,
+  Input
 } from "@angular/core";
 import { TagService } from "../../../../services/tag/TagService";
 import { MatChip, MatChipBase, DateAdapter } from "@angular/material";
@@ -30,7 +31,7 @@ import { Event } from "@angular/router";
 import { Tag } from "Models/tag/Tag";
 import { Document, Segment } from "Models/document/document";
 import { TreeContent, TreeFile, TreeNode } from "Models/tree/Tree";
-import { ColorizedNode } from "Models/tree/ColorizedTree";
+import { ColorizedNode, ColorizedTree } from "Models/tree/ColorizedTree";
 import { TreeService } from "Services/tree/Tree";
 import { isFulfilled } from "q";
 import { DialogService } from "Services/userfeedback/DialogService";
@@ -52,8 +53,12 @@ export class CustomTextareaComponent implements OnInit {
   private lastSelectionTime: number = -1;
   //constructor(private tagService: TagService) {}
   private componentFactory: ComponentFactory<TagComponent>;
-
   private ftcPortalHost: DomPortalHost;
+
+  private document : Document;
+  private tree : TreeFile;
+  private lastSegmentId = 0;
+
 
   constructor(
     private viewContainerRef: ViewContainerRef,
@@ -162,8 +167,13 @@ export class CustomTextareaComponent implements OnInit {
     let componentRef = this.componentFactory.create(this.injector);
 
     let editorEl: HTMLElement = this.editor.nativeElement;
-
     let node = this.lastSelection.startContainer;
+
+    let sel_so = this.lastSelection.startOffset;
+    let sel_sc = this.lastSelection.startContainer;
+
+    let sel_eo = this.lastSelection.endOffset;
+    let sel_ec = this.lastSelection.endContainer;
 
     if (node.nodeType == Node.TEXT_NODE) {
       // Split
@@ -243,7 +253,12 @@ export class CustomTextareaComponent implements OnInit {
 
       console.log(span_container, tag);
 
-      let whatevs = this.addSegToStructure(span_container, tag);
+      let whatevs = this.addSegToStructure(span_container,
+        sel_so,
+        sel_eo,
+        sel_sc,
+        sel_ec,
+        tag);
       //console.log(seg);
       //console.log("start sel ", this.lastSelection.startOffset);
       //console.log("end sel ", this.lastSelection.startOffset);
@@ -269,12 +284,17 @@ export class CustomTextareaComponent implements OnInit {
     return id + 1;
   }
 
-  private addSegToStructure(span_container : HTMLElement, tag : Tag) : any {
+  private addSegToStructure(span_container : HTMLElement,
+      startOffset: number,
+      endOffset: number,
+      startContainer: Node,
+      endContainer: Node,
+      tag : Tag) : any {
     console.log("Tag features: ", tag.features);
 
       let documents = this.documentService.loadDocuments();
-      let id = 0;
-      let actualDoc : Document = documents[id];
+      let id = this.document.header.id;
+      let actualDoc : Document = this.document;
       
       let tagText = "";
       let inners : any = span_container.getElementsByClassName("tag-inner");
@@ -289,31 +309,43 @@ export class CustomTextareaComponent implements OnInit {
           tagText += v.textContent;
         }
         if(child.className == "span-container"){
-          children.push(this.addSegToStructure(span_container, tag));
+          children.push(this.addSegToStructure(span_container,
+            startOffset,
+            endOffset,
+            startContainer,
+            endContainer,
+            tag));
         }
       });
 
       //console.log(actualDoc.body.segments);
 
 
+      this.lastSegmentId++;
       let segment : Segment = {
         features : tag.features,
         state : "active",
-        id : this.getNewIdFromSegmentArray(actualDoc.body.segments, 0),
-        children : null,
+        id: this.lastSegmentId,
+        children : [],
         text : tagText
       }
 
-      let docSeg = this.findSegmentByText(actualDoc.body.segments, tagText);
-
+      debugger;
+      let segmentID = Number.parseInt(span_container.parentElement.getAttribute("data-segment-id"));
       
-      console.log("docseg ", docSeg);
+      console.log("docseg ", segmentID);
 
-      docSeg = this.addSegmentIntoText(docSeg, tagText, this.getNewIdFromSegmentArray(actualDoc.body.segments, 0), segment);
+      this.lastSegmentId++;
+      segment = this.addSegmentIntoText(
+        this.findSegmentById(this.document.body.segments, segmentID),
+        startOffset,
+        endOffset,
+        this.lastSegmentId,
+        segment);
 
-      console.log("docseg children", docSeg.children);
+      console.log("docseg children", segment.children);
 
-      actualDoc = this.replaceSegmentInDocument(actualDoc, docSeg);
+      actualDoc = this.replaceSegmentInDocument(actualDoc, segment);
 
       console.log("actual doc ", actualDoc);
 
@@ -321,6 +353,25 @@ export class CustomTextareaComponent implements OnInit {
 
       this.documentService.storeDocuments(documents);
     return true;
+  }
+
+  private findSegmentById(segments: Segment[], id : number) : Segment {
+    if(segments.length == 0){
+      return null;
+    }
+
+    for(let s of segments){
+      if(s.id == id){
+        return s;
+      }
+
+      let cfind = this.findSegmentById(s.children, id);
+      if(cfind != null){
+        return cfind;
+      }
+    }
+
+    return null;
   }
 
   private replaceSegmentInDocument(doc : Document, segment : Segment) : Document{
@@ -343,28 +394,28 @@ export class CustomTextareaComponent implements OnInit {
     return segments;
   }
 
-  private addSegmentIntoText(segmentParent : Segment, text : string, nextID : number, segment : Segment) : Segment{
-    let strings : string[] = segmentParent.text.split(text);
+  private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment) : Segment{
+    let before = segmentParent.text.substr(0, offsetStart);
+    let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
+    let end = segmentParent.text.substr(offsetEnd, segmentParent.text.length);
+
     let segBefore : Segment= {
-      children : null,
+      children : [],
       id : nextID,
-      text : strings[0],
+      text: before,
       state : "active",
-      features : null
+      features : []
     };
 
     let segAfter : Segment = {
-      children : null,
+      children : [],
       id : nextID+1,
-      text : strings[1],
+      text : end,
       state : "active",
-      features : null
+      features : []
     }
-    if(segmentParent.children == undefined || segmentParent.children == null){
-      segmentParent.children = [segBefore, segment, segAfter];
-    }else{
-      segmentParent.children.push(segBefore, segment, segAfter);
-    }
+    segmentParent.children.push(segBefore, segment, segAfter);
+    segmentParent.text = "";
     return segmentParent;
   }
 
@@ -377,7 +428,7 @@ export class CustomTextareaComponent implements OnInit {
       if(v.text.indexOf(text) != -1){
         seg = v;
       }
-      if(v.children != null){
+      if(v.children.length == 0){
         let childSeg : Segment = this.findSegmentByText(v.children, text);
         if(childSeg != null)
           seg = childSeg;
@@ -425,6 +476,8 @@ export class CustomTextareaComponent implements OnInit {
   }
 
   load(d: Document, t: TreeFile) {
+    this.document = d;
+    this.tree = t;
     console.log('Editor: Loading...');
 
     if (t == null) {
@@ -444,40 +497,56 @@ export class CustomTextareaComponent implements OnInit {
     let el: HTMLElement = this.editor.nativeElement;
 
     for (let s of d.body.segments) {
-      let divSegment = document.createElement('div');
-      divSegment.className = "segment-container";
+      this.parseSegment(ct, el, s);
+    }
+  }
 
-      if (s.features.length == 0) {
-        divSegment.innerHTML = s.text.replace(/\n/g, '<br/>');
+  parseSegment(ct : ColorizedNode, el: HTMLElement, s: Segment){
+    let divSegment = document.createElement('div');
+    divSegment.className = "segment-container";
+    divSegment.setAttribute("data-segment-id", s.id.toString())
+
+    this.lastSegmentId = Math.max(this.lastSegmentId, s.id);
+
+    if (s.features.length == 0) {
+      divSegment.innerHTML = s.text.replace(/\n/g, '<br/>');
+    } else {
+      let content;
+      if(s.children.length == 0){
+        content = document.createElement('span');
+        content.innerText = s.text;
       } else {
-        let spanEl = document.createElement('span');
-        spanEl.innerText = s.text;
+        content = document.createElement('div');
+        content.className = 'segment-container';
 
-
-        let portal = new ComponentPortal(TagComponent);
-        let portalHost = new DomPortalHost(
-          divSegment,
-          this.resolver,
-          this.appRef,
-          this.injector
-        );
-
-        let ref = portalHost.attachComponentPortal(portal);
-        let tag = this.findTagByFeatures(ct, s.features);
-
-        if (tag == null) {
-          console.error("Invalid tag!");
-          return;
+        for (let segment of s.children) {
+          this.parseSegment(ct, content, segment);
         }
-
-        console.log("Setting tag to " + tag);
-
-        let element: ComponentRef<TagComponent> = ref;
-        element.instance.setContent(spanEl);
-        element.instance.setTag(tag);
       }
 
-      el.appendChild(divSegment);
+      let portal = new ComponentPortal(TagComponent);
+      let portalHost = new DomPortalHost(
+        divSegment,
+        this.resolver,
+        this.appRef,
+        this.injector
+      );
+
+      let ref = portalHost.attachComponentPortal(portal);
+      let tag = this.findTagByFeatures(ct, s.features);
+
+      if (tag == null) {
+        console.error("Invalid tag!");
+        return;
+      }
+
+      console.log("Setting tag to ", tag);
+
+      let element: ComponentRef<TagComponent> = ref;
+      element.instance.setContent(content);
+      element.instance.setTag(tag);
     }
+
+    el.appendChild(divSegment);
   }
 }
