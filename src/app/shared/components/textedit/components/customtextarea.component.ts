@@ -28,12 +28,13 @@ import { isFakeMousedownFromScreenReader } from "@angular/cdk/a11y";
 import { FloatingTagChooserComponent } from "../../floatintagchooser/floatingtagchooser.component";
 import { Event } from "@angular/router";
 import { Tag } from "Models/tag/Tag";
-import { Document } from "Models/document/document";
+import { Document, Segment } from "Models/document/document";
 import { TreeContent, TreeFile, TreeNode } from "Models/tree/Tree";
 import { ColorizedNode } from "Models/tree/ColorizedTree";
 import { TreeService } from "Services/tree/Tree";
 import { isFulfilled } from "q";
 import { DialogService } from "Services/userfeedback/DialogService";
+import { DocumentService } from "Services/document/DocumentService";
 
 @Component({
   selector: "custom-textarea",
@@ -60,7 +61,8 @@ export class CustomTextareaComponent implements OnInit {
     private injector: Injector,
     private appRef: ApplicationRef,
     private treeService: TreeService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private documentService: DocumentService
   ) {
     this.componentFactory = this.resolver.resolveComponentFactory(TagComponent);
   }
@@ -241,11 +243,147 @@ export class CustomTextareaComponent implements OnInit {
 
       console.log(span_container, tag);
 
+      let whatevs = this.addSegToStructure(span_container, tag);
+      //console.log(seg);
+      //console.log("start sel ", this.lastSelection.startOffset);
+      //console.log("end sel ", this.lastSelection.startOffset);
+
     } else {
       console.log(
         "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
       );
     }
+  }
+
+  private getNewIdFromSegmentArray(segments : Segment[], currentID : number) : number{
+    let id : number = currentID;
+    segments.forEach((v, i, a) => {
+       if(v.id > id){
+        id = v.id;
+       }
+       //console.log(v.id);
+       if(v.children != null){
+          let innerID :number = this.getNewIdFromSegmentArray(v.children, id); 
+       }
+    });
+    return id + 1;
+  }
+
+  private addSegToStructure(span_container : HTMLElement, tag : Tag) : any {
+    console.log("Tag features: ", tag.features);
+
+      let documents = this.documentService.loadDocuments();
+      let id = 0;
+      let actualDoc : Document = documents[id];
+      
+      let tagText = "";
+      let inners : any = span_container.getElementsByClassName("tag-inner");
+      inners = inners[0]; 
+      let tagInner : HTMLElement = inners; 
+      let children : Segment[];
+
+      tagInner.childNodes.forEach((v, k, p)=> {
+        let iHateTS : any = v;
+        let child : HTMLElement = iHateTS;
+        if(child.tagName != "DIV"){
+          tagText += v.textContent;
+        }
+        if(child.className == "span-container"){
+          children.push(this.addSegToStructure(span_container, tag));
+        }
+      });
+
+      //console.log(actualDoc.body.segments);
+
+
+      let segment : Segment = {
+        features : tag.features,
+        state : "active",
+        id : this.getNewIdFromSegmentArray(actualDoc.body.segments, 0),
+        children : null,
+        text : tagText
+      }
+
+      let docSeg = this.findSegmentByText(actualDoc.body.segments, tagText);
+
+      
+      console.log("docseg ", docSeg);
+
+      docSeg = this.addSegmentIntoText(docSeg, tagText, this.getNewIdFromSegmentArray(actualDoc.body.segments, 0), segment);
+
+      console.log("docseg children", docSeg.children);
+
+      actualDoc = this.replaceSegmentInDocument(actualDoc, docSeg);
+
+      console.log("actual doc ", actualDoc);
+
+      documents[id] = actualDoc;
+
+      this.documentService.storeDocuments(documents);
+    return true;
+  }
+
+  private replaceSegmentInDocument(doc : Document, segment : Segment) : Document{
+    doc.body.segments = this.recursiveReplaceSegments(doc.body.segments, segment);
+    return doc;
+  }
+
+  private recursiveReplaceSegments(segments : Segment[], segment : Segment) : Segment[]{
+    for(let i = 0; i < segments.length; i++){
+      if(segments[i].id = segment.id){
+        segments[i] = segment;
+        break;
+      }
+      if(segments[i].children != null){
+        let new_children =  this.recursiveReplaceSegments(segments[i].children, segment);
+        if(segments[i].children == new_children)
+          break;
+      }
+    }
+    return segments;
+  }
+
+  private addSegmentIntoText(segmentParent : Segment, text : string, nextID : number, segment : Segment) : Segment{
+    let strings : string[] = segmentParent.text.split(text);
+    let segBefore : Segment= {
+      children : null,
+      id : nextID,
+      text : strings[0],
+      state : "active",
+      features : null
+    };
+
+    let segAfter : Segment = {
+      children : null,
+      id : nextID+1,
+      text : strings[1],
+      state : "active",
+      features : null
+    }
+    if(segmentParent.children == undefined || segmentParent.children == null){
+      segmentParent.children = [segBefore, segment, segAfter];
+    }else{
+      segmentParent.children.push(segBefore, segment, segAfter);
+    }
+    return segmentParent;
+  }
+
+  private findSegmentByText(segments : Segment[], text : string) : Segment{
+    let seg : Segment = null;
+    segments.forEach((v, i, a) => {
+      //console.log(v.text);
+      //console.log(text);
+      //console.log(v);
+      if(v.text.indexOf(text) != -1){
+        seg = v;
+      }
+      if(v.children != null){
+        let childSeg : Segment = this.findSegmentByText(v.children, text);
+        if(childSeg != null)
+          seg = childSeg;
+      }
+   });
+    return seg;
   }
 
   private findTagByFeatures(n: ColorizedNode, features: string[]): ColorizedNode {

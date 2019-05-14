@@ -62,8 +62,9 @@ export class DocumentComponent implements OnInit, AfterViewInit {
     export(document : Document){
         const file : File = {
             version: 1.0, 
-            data : document
+            data : this.documentService.getDocument(document.header.id)
         }
+        console.log("exporting this -> ", file.data);
         this.exportService.export(file);
     }
 

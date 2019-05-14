@@ -60,6 +60,7 @@ export class ExportService {
     private recursiveSegmentIterator(segment : Segment) : Node{
         let segNode = document.createElement("segment");
         let feats = "";
+        if(segment.features != null)
         segment.features.forEach((v, i, a) => {
             if(feats != "")
                 feats += ";";
