@@ -398,13 +398,23 @@ export class CustomTextareaComponent implements OnInit {
   private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment, span_container : Node) : Segment{
     let parent_childNodes = span_container.parentElement.childNodes;
     let offs = 0;
-    for(let i = 0; i < parent_childNodes.length; i++){
+    let i = 0;
+    for(i=0; i < parent_childNodes.length; i++){
       let child = <HTMLElement> parent_childNodes[i];
-      if(child.className == "span-container"){
+      if(child == span_container){
         break;
       }
-      offs += child.innerHTML.length;
+      if(child.tagName == 'BR'){
+        offs++;
+      }
+
+      if(child.innerText != undefined){
+        offs += child.innerText.length;
+      } else {
+        offs += child.textContent.length;
+      }
     }
+    debugger;
     offsetStart += offs;
     offsetEnd += offs;
     let before = segmentParent.text.substring(0, offsetStart);
@@ -523,47 +533,46 @@ export class CustomTextareaComponent implements OnInit {
     let divSegment = document.createElement('div');
     divSegment.className = "segment-container";
     divSegment.setAttribute("data-segment-id", s.id.toString())
-
+    
     this.lastSegmentId = Math.max(this.lastSegmentId, s.id);
-
-    if (s.features.length == 0) {
-      divSegment.innerHTML = s.text.replace(/\n/g, '<br/>');
+    let content;
+    if(s.children.length == 0){
+      content = document.createElement('span');
+      content.innerText = s.text;
     } else {
-      let content;
-      if(s.children.length == 0){
-        content = document.createElement('span');
-        content.innerText = s.text;
-      } else {
-        content = document.createElement('div');
-        content.className = 'segment-container';
+      content = document.createElement('div');
+      content.className = 'segment-container';
 
-        for (let segment of s.children) {
-          this.parseSegment(ct, content, segment);
-        }
+      for (let segment of s.children) {
+        this.parseSegment(ct, content, segment);
       }
-
-      let portal = new ComponentPortal(TagComponent);
-      let portalHost = new DomPortalHost(
-        divSegment,
-        this.resolver,
-        this.appRef,
-        this.injector
-      );
-
-      let ref = portalHost.attachComponentPortal(portal);
-      let tag = this.findTagByFeatures(ct, s.features);
-
-      if (tag == null) {
-        console.error("Invalid tag!");
-        return;
-      }
-
-      console.log("Setting tag to ", tag);
-
-      let element: ComponentRef<TagComponent> = ref;
-      element.instance.setContent(content);
-      element.instance.setTag(tag);
     }
+
+    let portal = new ComponentPortal(TagComponent);
+    let portalHost = new DomPortalHost(
+      divSegment,
+      this.resolver,
+      this.appRef,
+      this.injector
+    );
+
+    let ref = portalHost.attachComponentPortal(portal);
+
+    console.log("Features: ", s.features);
+
+    let tag = this.findTagByFeatures(ct, s.features.reverse());
+
+    if (tag == null) {
+      console.error("Invalid tag!");
+      el.appendChild(content);
+      return;
+    }
+
+    console.log("Setting tag to ", tag);
+
+    let element: ComponentRef<TagComponent> = ref;
+    element.instance.setContent(content);
+    element.instance.setTag(tag);
 
     el.appendChild(divSegment);
   }
