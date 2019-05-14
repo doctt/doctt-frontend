@@ -331,7 +331,12 @@ export class CustomTextareaComponent implements OnInit {
       }
 
       //debugger;
-      let segmentID = Number.parseInt(span_container.parentElement.getAttribute("data-segment-id"));
+      let node = span_container;
+      while(node.parentElement.getAttribute("data-segment-id") == ""){
+        node = node.parentElement;
+      } 
+      let segmentID = Number.parseInt(node.parentElement.getAttribute("data-segment-id"));
+      debugger;
       
       console.log("docseg ", segmentID);
 
@@ -560,10 +565,11 @@ export class CustomTextareaComponent implements OnInit {
 
     console.log("Features: ", s.features);
 
-    let tag = this.findTagByFeatures(ct, s.features.reverse());
+    let tag = this.findTagByFeatures(ct, s.features);
 
     if (tag == null) {
       console.error("Invalid tag!");
+      content.setAttribute("data-segment-id", s.id.toString());
       el.appendChild(content);
       return;
     }
