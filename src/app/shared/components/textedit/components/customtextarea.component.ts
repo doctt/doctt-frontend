@@ -255,6 +255,7 @@ export class CustomTextareaComponent implements OnInit {
       let element: ComponentRef<TagComponent> = ref;
       element.instance.setContent(content);
       element.instance.setTag(tag);
+      element.instance.setDocument(this.document);
 
       console.log(span_container, tag);
 
@@ -350,7 +351,7 @@ export class CustomTextareaComponent implements OnInit {
       debugger;
       this.lastSegmentId++;
       segment = this.addSegmentIntoText(
-        this.findSegmentById(this.document.body.segments, segmentID),
+        CustomTextareaComponent.findSegmentById(this.document.body.segments, segmentID),
         startOffset,
         endOffset,
         this.lastSegmentId,
@@ -363,7 +364,7 @@ export class CustomTextareaComponent implements OnInit {
       console.log("id to replace ", segmentID);
       console.log("just before replace doc ", actualDoc);
       debugger;
-      actualDoc = this.replaceSegmentInDocument(actualDoc, segment, segmentID);
+      actualDoc = CustomTextareaComponent.replaceSegmentInDocument(actualDoc, segment, segmentID);
 
       console.log("actual doc ", actualDoc);
 
@@ -373,7 +374,13 @@ export class CustomTextareaComponent implements OnInit {
     return true;
   }
 
-  private findSegmentById(segments: Segment[], id : number) : Segment {
+  public static removeFeaturesBySegmentId(document: Document, id: number){
+    let s = this.findSegmentById(document.body.segments, id);
+    s.features = [];
+    this.replaceSegmentInDocument(document, s, id);
+  }
+
+  private static findSegmentById(segments: Segment[], id : number) : Segment {
     if(segments.length == 0){
       return null;
     }
@@ -392,12 +399,12 @@ export class CustomTextareaComponent implements OnInit {
     return null;
   }
 
-  private replaceSegmentInDocument(doc : Document, segment : Segment, id : number ) : Document{
+  private static replaceSegmentInDocument(doc : Document, segment : Segment, id : number ) : Document{
     doc.body.segments = this.recursiveReplaceSegments(doc.body.segments, segment, id);
     return doc;
   }
 
-  private recursiveReplaceSegments(segments : Segment[], segment : Segment, id : number) : Segment[]{
+  private static recursiveReplaceSegments(segments : Segment[], segment : Segment, id : number) : Segment[]{
     for(let i = 0; i < segments.length; i++){
       console.log(segments[i].id, " vs ",  id);
       if(segments[i].id == id){

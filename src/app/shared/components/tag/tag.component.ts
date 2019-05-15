@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { HSLColor } from "Models/hslcolor/HSLColor";
 import { ColorizedNode } from "Models/tree/ColorizedTree";
 import { findNode } from "@angular/compiler";
+import { CustomTextareaComponent } from "Components/textedit/components/customtextarea.component";
+import { Document } from "Models/document/document";
+import { DocumentService } from "Services/document/DocumentService";
 
 @Component({
   selector: "doctt-tag",
@@ -12,6 +15,7 @@ export class TagComponent implements OnInit {
   private element: Node;
   private tagNode: ColorizedNode;
   private tooltip: string;
+  private document : Document;
 
   private og_el: Node = null;
   @ViewChild("tag") tag: ElementRef | undefined;
@@ -72,6 +76,9 @@ export class TagComponent implements OnInit {
       docFragment.append(el);
     }
 
+    let id = Number.parseInt(spanContainer.getAttribute("data-segment-id"));
+    CustomTextareaComponent.removeFeaturesBySegmentId(this.document, id);
+
     if(father != null){
       father.insertBefore(docFragment, spanContainer);
       father.removeChild(spanContainer);
@@ -94,6 +101,10 @@ export class TagComponent implements OnInit {
 
   private setColor(color: HSLColor) {
     this.tag.nativeElement.style.backgroundColor = color.toCSS();
+  }
+
+  setDocument(document : Document){
+    this.document = document;
   }
 
   setTag(tag: ColorizedNode) {
