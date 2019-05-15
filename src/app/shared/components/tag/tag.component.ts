@@ -122,7 +122,7 @@ export class TagComponent implements OnInit {
     }
   }
 
-  private setColor(color: HSLColor) {
+  setColor(color: HSLColor) {
     this.tag.nativeElement.style.backgroundColor = color.toCSS();
   }
 

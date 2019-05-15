@@ -8,7 +8,10 @@ class TreeColorizer {
     HSLColor.toHSL("#f44336"),
     HSLColor.toHSL("#673AB7"),
     HSLColor.toHSL("#4CAF50"),
-    HSLColor.toHSL("#FFC107")
+    HSLColor.toHSL("#FFC107"),
+    HSLColor.toHSL("#009688"),
+    HSLColor.toHSL("#795548"),
+    HSLColor.toHSL("#E91E63"),
   ];
 
   static colorize(root: TreeNode): ColorizedNode[] {

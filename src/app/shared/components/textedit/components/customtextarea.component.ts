@@ -163,10 +163,6 @@ export class CustomTextareaComponent implements OnInit {
   }
 
   select(tag: Tag): void {
-    let common = this.lastSelection.commonAncestorContainer;
-    let componentRef = this.componentFactory.create(this.injector);
-
-    let editorEl: HTMLElement = this.editor.nativeElement;
     let node = this.lastSelection.startContainer;
 
     let sel_so = this.lastSelection.startOffset;
@@ -178,7 +174,6 @@ export class CustomTextareaComponent implements OnInit {
     if (node.nodeType == Node.TEXT_NODE) {
       // Split
       let text = node.textContent;
-
       let span_container;
 
       let element_container;
@@ -187,9 +182,9 @@ export class CustomTextareaComponent implements OnInit {
       let selectionContainer = document.createElement("div");
       selectionContainer.style.display = "inline-block";
 
-      if (
-        this.lastSelection.startContainer == this.lastSelection.endContainer
-      ) {
+      debugger;
+
+      if (this.lastSelection.startContainer == this.lastSelection.endContainer) {
         // Same container, 3 spans!
         span_container = document.createElement("span");
         let text1 = text.substr(0, this.lastSelection.startOffset);
@@ -300,25 +295,19 @@ export class CustomTextareaComponent implements OnInit {
       let inners : any = span_container.getElementsByClassName("tag-inner");
       inners = inners[0]; 
       let tagInner : HTMLElement = inners; 
-      let children : Segment[];
       
       tagInner.childNodes.forEach((v, k, p)=> {
-        let iHateTS : any = v;
-        let child : HTMLElement = iHateTS;
-        if(child.tagName != "DIV"){
+        if(v.nodeType == Node.TEXT_NODE){
           tagText += v.textContent;
+        } else {
+          let e : HTMLElement = (<HTMLElement> v);
+          if(e.tagName == 'BR'){
+            tagText += '\n';
+            return;
+          }
+          tagText += e.innerText;
         }
-        /*if(child.className == "segment-container"){
-          children.push(this.addSegToStructure(span_container,
-            startOffset,
-            endOffset,
-            startContainer,
-            endContainer,
-            tag));
-        }*/
       });
-
-      //console.log(actualDoc.body.segments);
 
 
       this.lastSegmentId++;
@@ -377,13 +366,7 @@ export class CustomTextareaComponent implements OnInit {
     }
     return segments;
   }
-  /*
-  public static removeFeaturesBySegmentId(document: Document, id: number){
-    let s = this.findSegmentById(document.body.segments, id);
-    s.features = [];
-    this.replaceSegmentInDocument(document, s, id);
-  }
-  */
+
   private static findSegmentById(segments: Segment[], id : number) : Segment {
     if(segments.length == 0){
       return null;
@@ -447,7 +430,9 @@ export class CustomTextareaComponent implements OnInit {
     offsetEnd += offs;
     let before = segmentParent.text.substring(0, offsetStart);
     //let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
-    let end = segmentParent.text.substring(offsetEnd, segmentParent.text.length);
+    let end = segmentParent.text.substring(segment.text.length + offsetStart, segmentParent.text.length);
+
+    debugger;
 
     let segBefore : Segment= {
       children : [],
