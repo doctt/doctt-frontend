@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { HSLColor } from "Models/hslcolor/HSLColor";
 import { ColorizedNode } from "Models/tree/ColorizedTree";
-import { findNode } from "@angular/compiler";
 import { CustomTextareaComponent } from "Components/textedit/components/customtextarea.component";
 import { Document } from "Models/document/document";
-import { DocumentService } from "Services/document/DocumentService";
 
 @Component({
   selector: "doctt-tag",

@@ -15,7 +15,9 @@
         "paths": {
           "*": ["types/*"],
             "Models/*": ["src/app/models/*"],
-            "Services/*": ["src/app/services/*"]
+            "Services/*": ["src/app/services/*"],
+            "Directives/*": ["src/app/directives/*"],
+            "Components/*": ["src/app/shared/components/*"],
         },
         "baseUrl": "../",
         "typeRoots": [
