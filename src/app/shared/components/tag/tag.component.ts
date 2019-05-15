@@ -77,11 +77,32 @@ export class TagComponent implements OnInit {
     }
 
     let id = Number.parseInt(spanContainer.getAttribute("data-segment-id"));
+    console.log("removing id ", id);
     //CustomTextareaComponent.removeFeaturesBySegmentId(this.document, id);
     CustomTextareaComponent.removeFeaturesFromSegmentID(id, this.documentService, this.document);
 
     if(father != null){
-      father.insertBefore(docFragment, spanContainer);
+      let finalDocFragment = document.createDocumentFragment();
+      father.childNodes.forEach((v, k, p)=> {
+        if(v != spanContainer){
+          let child : HTMLElement = <HTMLElement> v; 
+          let arrayToAppend : ChildNode[] = [];
+          child.childNodes.forEach((i, j, k)=>{
+            arrayToAppend.push(i);
+            //debugger;
+          })
+          for(let e of arrayToAppend){
+            finalDocFragment.append(e);
+          }
+        }else{
+          finalDocFragment.append(document.createElement("br"));
+          finalDocFragment.append(docFragment.children[0]);
+        }
+      });
+      father.childNodes.forEach((v, k, p) => {
+        father.removeChild(v);
+      });
+      father.append(finalDocFragment);
       father.removeChild(spanContainer);
     }
   }
