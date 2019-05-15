@@ -257,20 +257,16 @@ export class CustomTextareaComponent implements OnInit {
       element.instance.setTag(tag);
       element.instance.setDocument(this.document);
 
-      console.log(span_container, tag);
-
       let whatevs = this.addSegToStructure(span_container,
         sel_so,
         sel_eo,
         sel_sc,
         sel_ec,
         tag);
-      //console.log(seg);
-      //console.log("start sel ", this.lastSelection.startOffset);
-      //console.log("end sel ", this.lastSelection.startOffset);
+
 
     } else {
-      console.log(
+      console.warn(
         "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
       );
     }
@@ -282,7 +278,6 @@ export class CustomTextareaComponent implements OnInit {
        if(v.id > id){
         id = v.id;
        }
-       //console.log(v.id);
        if(v.children != null){
           let innerID :number = this.getNewIdFromSegmentArray(v.children, id); 
        }
@@ -296,7 +291,6 @@ export class CustomTextareaComponent implements OnInit {
       startContainer: Node,
       endContainer: Node,
       tag : Tag) : any {
-    console.log("Tag features: ", tag.features);
 
       let documents = this.documentService.loadDocuments();
       let id = this.document.header.id;
@@ -307,9 +301,7 @@ export class CustomTextareaComponent implements OnInit {
       inners = inners[0]; 
       let tagInner : HTMLElement = inners; 
       let children : Segment[];
-
-      console.log("before replace doc ", actualDoc);
-      debugger;
+      
       tagInner.childNodes.forEach((v, k, p)=> {
         let iHateTS : any = v;
         let child : HTMLElement = iHateTS;
@@ -338,17 +330,13 @@ export class CustomTextareaComponent implements OnInit {
         text : tagText
       }
 
-      //debugger;
+      //
       let node = span_container;
       while(node.parentElement.getAttribute("data-segment-id") == ""){
         node = node.parentElement;
       } 
       let segmentID = Number.parseInt(node.parentElement.getAttribute("data-segment-id"));
-      debugger;
       
-      console.log("docseg ", segmentID);
-      console.log("before replace doc 2", actualDoc);
-      debugger;
       this.lastSegmentId++;
       segment = this.addSegmentIntoText(
         CustomTextareaComponent.findSegmentById(this.document.body.segments, segmentID),
@@ -358,15 +346,7 @@ export class CustomTextareaComponent implements OnInit {
         segment,
         span_container);
       this.lastSegmentId += 2;
-      console.log("docseg children", segment.children);
-
-      console.log("last seg id ", this.lastSegmentId);
-      console.log("id to replace ", segmentID);
-      console.log("just before replace doc ", actualDoc);
-      debugger;
       actualDoc = CustomTextareaComponent.replaceSegmentInDocument(actualDoc, segment, segmentID);
-
-      console.log("actual doc ", actualDoc);
 
       documents[id] = actualDoc;
 
@@ -430,9 +410,7 @@ export class CustomTextareaComponent implements OnInit {
 
   private static recursiveReplaceSegments(segments : Segment[], segment : Segment, id : number) : Segment[]{
     for(let i = 0; i < segments.length; i++){
-      console.log(segments[i].id, " vs ",  id);
       if(segments[i].id == id){
-        console.log("same id");
         segments[i] = segment;
         break;
       }
@@ -446,7 +424,6 @@ export class CustomTextareaComponent implements OnInit {
   }
 
   private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment, span_container : Node) : Segment{
-    console.log("seg parent (seg into text): ", segmentParent);
     let parent_childNodes = span_container.parentElement.childNodes;
     let offs = 0;
     let i = 0;
@@ -465,20 +442,13 @@ export class CustomTextareaComponent implements OnInit {
         offs += child.textContent.length;
       }
     }
-    debugger;
+    
     offsetStart += offs;
     offsetEnd += offs;
     let before = segmentParent.text.substring(0, offsetStart);
     //let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
     let end = segmentParent.text.substring(offsetEnd, segmentParent.text.length);
 
-    console.log("seg parent -> ", segmentParent);
-    console.log("seg parent text -> ", segmentParent.text);
-    console.log("selected text -> ", segmentParent.text.substring(offsetStart, offsetEnd));
-    console.log("offset start -> ", offsetStart);
-    console.log("offset end -> ", offsetEnd);
-    console.log("text before -> ", before);
-    console.log("text after-> ", end);
     let segBefore : Segment= {
       children : [],
       id : nextID,
@@ -502,9 +472,6 @@ export class CustomTextareaComponent implements OnInit {
   private findSegmentByText(segments : Segment[], text : string) : Segment{
     let seg : Segment = null;
     segments.forEach((v, i, a) => {
-      //console.log(v.text);
-      //console.log(text);
-      //console.log(v);
       if(v.text.indexOf(text) != -1){
         seg = v;
       }
@@ -517,18 +484,37 @@ export class CustomTextareaComponent implements OnInit {
     return seg;
   }
 
-  private findTagByFeatures(n: ColorizedNode, features: string[]): ColorizedNode {
-    if (n.name.toUpperCase() == n.name) {
+  private findTagByFeatures2(n: ColorizedNode, originalFeatures: string[], features: string[]) : Tag {
+    if(originalFeatures.length == 0){
+      return null;
+    }
+    
+    if(features.length == 0){
+      console.log("Features is 0 !");
+      return {
+        color: n.color,
+        features: originalFeatures,
+        name: n.name
+      };
+    }
 
-      if (features == undefined || features.length == 0) {
-        return null;
+    if (features.length == 1 && originalFeatures.length != 0) {
+      if(n.name == features[0]){
+        return {
+          color: n.color,
+          features: originalFeatures,
+          name: n.name
+        };
       }
+    }
+    
+    if (n.name.toUpperCase() == n.name) {
 
       // Looks like a -TYPE node, skip it
       let node = null;
       for (let c of n.children) {
         if (c.name == features[0]) {
-          return this.findTagByFeatures(c, features);
+          return this.findTagByFeatures2(c, originalFeatures, features);
         }
       }
 
@@ -541,14 +527,10 @@ export class CustomTextareaComponent implements OnInit {
       return null;
     }
 
-    if (features.length == 1) {
-      return n;
-    }
-
     if (n.children != null) {
       for (let c of n.children) {
         let new_feats = features.slice(0);
-        let lastN = this.findTagByFeatures(c, new_feats.splice(1));
+        let lastN = this.findTagByFeatures2(c, originalFeatures, new_feats.splice(1));
         if (lastN != null) {
           return lastN;
         }
@@ -556,10 +538,14 @@ export class CustomTextareaComponent implements OnInit {
     }
   }
 
+  private findTagByFeatures(n: ColorizedNode, features: string[]): Tag {
+    console.log("findTagByFeatures", n.children, features);
+    return this.findTagByFeatures2(n, features, features.slice(0));
+  }
+
   load(d: Document, t: TreeFile) {
     this.document = d;
     this.tree = t;
-    console.log('Editor: Loading...');
 
     if (t == null) {
       console.error("Cannot load a document without a corresponding TreeFile");
@@ -610,14 +596,9 @@ export class CustomTextareaComponent implements OnInit {
     );
 
     let ref = portalHost.attachComponentPortal(portal);
-
-    console.log("Features: ", s.features);
-    console.log("Segment: ", s);
-
     let tag = this.findTagByFeatures(ct, s.features);
 
     if (tag == null) {
-      console.info("Features null!");
       content.setAttribute("data-segment-id", s.id.toString());
       el.appendChild(content);
       return;
