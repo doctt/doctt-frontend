@@ -302,20 +302,22 @@ export class CustomTextareaComponent implements OnInit {
       let tagInner : HTMLElement = inners; 
       let children : Segment[];
 
+      console.log("before replace doc ", actualDoc);
+      debugger;
       tagInner.childNodes.forEach((v, k, p)=> {
         let iHateTS : any = v;
         let child : HTMLElement = iHateTS;
         if(child.tagName != "DIV"){
           tagText += v.textContent;
         }
-        if(child.className == "segment-container"){
+        /*if(child.className == "segment-container"){
           children.push(this.addSegToStructure(span_container,
             startOffset,
             endOffset,
             startContainer,
             endContainer,
             tag));
-        }
+        }*/
       });
 
       //console.log(actualDoc.body.segments);
@@ -339,7 +341,8 @@ export class CustomTextareaComponent implements OnInit {
       debugger;
       
       console.log("docseg ", segmentID);
-
+      console.log("before replace doc 2", actualDoc);
+      debugger;
       this.lastSegmentId++;
       segment = this.addSegmentIntoText(
         this.findSegmentById(this.document.body.segments, segmentID),
@@ -351,7 +354,11 @@ export class CustomTextareaComponent implements OnInit {
       this.lastSegmentId += 2;
       console.log("docseg children", segment.children);
 
-      actualDoc = this.replaceSegmentInDocument(actualDoc, segment);
+      console.log("last seg id ", this.lastSegmentId);
+      console.log("id to replace ", segmentID);
+      console.log("just before replace doc ", actualDoc);
+      debugger;
+      actualDoc = this.replaceSegmentInDocument(actualDoc, segment, segmentID);
 
       console.log("actual doc ", actualDoc);
 
@@ -380,19 +387,21 @@ export class CustomTextareaComponent implements OnInit {
     return null;
   }
 
-  private replaceSegmentInDocument(doc : Document, segment : Segment) : Document{
-    doc.body.segments = this.recursiveReplaceSegments(doc.body.segments, segment);
+  private replaceSegmentInDocument(doc : Document, segment : Segment, id : number ) : Document{
+    doc.body.segments = this.recursiveReplaceSegments(doc.body.segments, segment, id);
     return doc;
   }
 
-  private recursiveReplaceSegments(segments : Segment[], segment : Segment) : Segment[]{
+  private recursiveReplaceSegments(segments : Segment[], segment : Segment, id : number) : Segment[]{
     for(let i = 0; i < segments.length; i++){
-      if(segments[i].id = segment.id){
+      console.log(segments[i].id, " vs ",  id);
+      if(segments[i].id == id){
+        console.log("same id");
         segments[i] = segment;
         break;
       }
       if(segments[i].children != null){
-        let new_children =  this.recursiveReplaceSegments(segments[i].children, segment);
+        let new_children =  this.recursiveReplaceSegments(segments[i].children, segment, id);
         if(segments[i].children == new_children)
           break;
       }
@@ -401,6 +410,7 @@ export class CustomTextareaComponent implements OnInit {
   }
 
   private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment, span_container : Node) : Segment{
+    console.log("seg parent (seg into text): ", segmentParent);
     let parent_childNodes = span_container.parentElement.childNodes;
     let offs = 0;
     let i = 0;
@@ -426,6 +436,7 @@ export class CustomTextareaComponent implements OnInit {
     //let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
     let end = segmentParent.text.substring(offsetEnd, segmentParent.text.length);
 
+    console.log("seg parent -> ", segmentParent);
     console.log("seg parent text -> ", segmentParent.text);
     console.log("selected text -> ", segmentParent.text.substring(offsetStart, offsetEnd));
     console.log("offset start -> ", offsetStart);
