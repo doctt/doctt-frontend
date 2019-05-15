@@ -374,12 +374,36 @@ export class CustomTextareaComponent implements OnInit {
     return true;
   }
 
+  public static removeFeaturesFromSegmentID(id : number, documentService : DocumentService, document : Document){
+    let docs : Document[] = documentService.loadDocuments();
+    document.body.segments = this.recursiveFeatuersRemoval(document.body.segments, id);
+    docs[document.header.id] = document;
+    documentService.storeDocuments(docs);
+  }
+
+  private static recursiveFeatuersRemoval(segments : Segment[], id : number) : Segment[]{
+    if(segments.length == 0){
+      return [];
+    }
+
+    for(let s of segments){
+      if(s.id == id){
+        s.features = [];
+        return segments;
+      }
+      if(s.children != null && s.children != []){
+        s.children = this.recursiveFeatuersRemoval(s.children, id);
+      }
+    }
+    return segments;
+  }
+  /*
   public static removeFeaturesBySegmentId(document: Document, id: number){
     let s = this.findSegmentById(document.body.segments, id);
     s.features = [];
     this.replaceSegmentInDocument(document, s, id);
   }
-
+  */
   private static findSegmentById(segments: Segment[], id : number) : Segment {
     if(segments.length == 0){
       return null;
@@ -593,7 +617,7 @@ export class CustomTextareaComponent implements OnInit {
     let tag = this.findTagByFeatures(ct, s.features);
 
     if (tag == null) {
-      console.error("Invalid tag!");
+      console.info("Features null!");
       content.setAttribute("data-segment-id", s.id.toString());
       el.appendChild(content);
       return;
@@ -604,6 +628,7 @@ export class CustomTextareaComponent implements OnInit {
     let element: ComponentRef<TagComponent> = ref;
     element.instance.setContent(content);
     element.instance.setTag(tag);
+    element.instance.setDocument(this.document);
 
     el.appendChild(divSegment);
   }

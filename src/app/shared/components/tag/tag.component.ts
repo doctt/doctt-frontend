@@ -3,7 +3,7 @@ import { HSLColor } from "Models/hslcolor/HSLColor";
 import { ColorizedNode } from "Models/tree/ColorizedTree";
 import { findNode } from "@angular/compiler";
 import { CustomTextareaComponent } from "Components/textedit/components/customtextarea.component";
-import { Document } from "Models/document/document";
+import { Document, Segment } from "Models/document/document";
 import { DocumentService } from "Services/document/DocumentService";
 
 @Component({
@@ -21,7 +21,7 @@ export class TagComponent implements OnInit {
   @ViewChild("tag") tag: ElementRef | undefined;
   @ViewChild("tagInner") content: ElementRef | undefined;
 
-  constructor() { }
+  constructor(private documentService : DocumentService) { }
 
   ngOnInit(): void { }
 
@@ -77,7 +77,8 @@ export class TagComponent implements OnInit {
     }
 
     let id = Number.parseInt(spanContainer.getAttribute("data-segment-id"));
-    CustomTextareaComponent.removeFeaturesBySegmentId(this.document, id);
+    //CustomTextareaComponent.removeFeaturesBySegmentId(this.document, id);
+    CustomTextareaComponent.removeFeaturesFromSegmentID(id, this.documentService, this.document);
 
     if(father != null){
       father.insertBefore(docFragment, spanContainer);

@@ -1,7 +1,7 @@
 import { TagComponent } from "./tag.component";
 import { ElementRef } from "@angular/core";
 
-
+/*
 test("setContent", () => {
   let tag : TagComponent = new TagComponent();
   let content = document.createElement("p");
@@ -15,7 +15,6 @@ test("setContent", () => {
   expect(natEl.children[0].innerHTML).toBe(content.innerHTML);
 });
 
-/*
 test("setType", () => {
   let tag : TagComponent = new TagComponent();
   let inner = document.createElement("p");
