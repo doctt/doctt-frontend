@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { HSLColor } from "Models/hslcolor/HSLColor";
-import { ColorizedNode } from "Models/tree/ColorizedTree";
+import { ColorizedNode, ColorizedUtilities } from "Models/tree/ColorizedTree";
 import { CustomTextareaComponent } from "Components/textedit/components/customtextarea.component";
 import { Document } from "Models/document/document";
 import { DocumentService } from "Services/document/DocumentService";
+import { Tag } from "Models/tag/Tag";
 
 @Component({
   selector: "doctt-tag",
@@ -12,7 +13,7 @@ import { DocumentService } from "Services/document/DocumentService";
 })
 export class TagComponent implements OnInit {
   private element: Node;
-  private tagNode: ColorizedNode;
+  private tagNode: Tag;
   private tooltip: string;
   private document : Document;
 
@@ -87,6 +88,7 @@ export class TagComponent implements OnInit {
 
   onMouseOver(event: MouseEvent) {
     //console.log("Mouse over tag", event);
+    console.log(this.tagNode);
   }
 
   setContent(element: Node) {
@@ -107,7 +109,7 @@ export class TagComponent implements OnInit {
     this.document = document;
   }
 
-  setTag(tag: ColorizedNode) {
+  setTag(tag: Tag) {
     this.setColor(tag.color);
     this.tagNode = tag;
     this.tooltip = tag.name;

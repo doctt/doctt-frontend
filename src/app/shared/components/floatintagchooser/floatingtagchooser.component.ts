@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '
 import { TreeFile } from 'Models/tree/Tree';
 import { TreeService } from 'Services/tree/Tree';
 import { TreeColorizer } from 'Services/tree/TreeColorizer';
-import { ColorizedNode } from 'Models/tree/ColorizedTree';
+import { ColorizedNode, ColorizedUtilities } from 'Models/tree/ColorizedTree';
 import { IconColorDirective } from 'Directives/iconcolor/iconcolor.directive'
 import { Tag } from 'Models/tag/Tag';
 
@@ -29,27 +29,17 @@ export class FloatingTagChooserComponent implements OnInit {
         }
     }
 
-    private getFeatures(node: ColorizedNode) : string[] {
-        let features : string[] = [];
-        
-        if(node == null){
-            return features;
-        }
-
-        features.push(node.name);
-        features.push(...this.getFeatures(node.parent));
-
-        return features.reverse();
-    }
-
     private selectNode(node: ColorizedNode){
+        let features = ColorizedUtilities.getFeatures(this.currentNode);
         if(node.children == null || this.currentNode == node){
             // Leaf
             node.parent = this.currentNode.parent;
+            features.push(node.name);
+
             this.tagSelection.emit({
                 name: node.name,
                 color: node.color,
-                features: this.getFeatures(node)
+                features: features
             })
             return;
         }
