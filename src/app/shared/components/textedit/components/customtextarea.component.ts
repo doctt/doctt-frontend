@@ -9,7 +9,8 @@ import {
   ComponentFactory,
   Injector,
   ApplicationRef,
-  ComponentRef
+  ComponentRef,
+  Input
 } from "@angular/core";
 import { TagService } from "../../../../services/tag/TagService";
 import { MatChip, MatChipBase, DateAdapter } from "@angular/material";
@@ -28,12 +29,13 @@ import { isFakeMousedownFromScreenReader } from "@angular/cdk/a11y";
 import { FloatingTagChooserComponent } from "../../floatintagchooser/floatingtagchooser.component";
 import { Event } from "@angular/router";
 import { Tag } from "Models/tag/Tag";
-import { Document } from "Models/document/document";
+import { Document, Segment } from "Models/document/document";
 import { TreeContent, TreeFile, TreeNode } from "Models/tree/Tree";
-import { ColorizedNode } from "Models/tree/ColorizedTree";
+import { ColorizedNode, ColorizedTree } from "Models/tree/ColorizedTree";
 import { TreeService } from "Services/tree/Tree";
 import { isFulfilled } from "q";
 import { DialogService } from "Services/userfeedback/DialogService";
+import { DocumentService } from "Services/document/DocumentService";
 
 @Component({
   selector: "custom-textarea",
@@ -51,8 +53,12 @@ export class CustomTextareaComponent implements OnInit {
   private lastSelectionTime: number = -1;
   //constructor(private tagService: TagService) {}
   private componentFactory: ComponentFactory<TagComponent>;
-
   private ftcPortalHost: DomPortalHost;
+
+  private document : Document;
+  private tree : TreeFile;
+  private lastSegmentId = 0;
+
 
   constructor(
     private viewContainerRef: ViewContainerRef,
@@ -60,7 +66,8 @@ export class CustomTextareaComponent implements OnInit {
     private injector: Injector,
     private appRef: ApplicationRef,
     private treeService: TreeService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private documentService: DocumentService
   ) {
     this.componentFactory = this.resolver.resolveComponentFactory(TagComponent);
   }
@@ -160,8 +167,13 @@ export class CustomTextareaComponent implements OnInit {
     let componentRef = this.componentFactory.create(this.injector);
 
     let editorEl: HTMLElement = this.editor.nativeElement;
-
     let node = this.lastSelection.startContainer;
+
+    let sel_so = this.lastSelection.startOffset;
+    let sel_sc = this.lastSelection.startContainer;
+
+    let sel_eo = this.lastSelection.endOffset;
+    let sel_ec = this.lastSelection.endContainer;
 
     if (node.nodeType == Node.TEXT_NODE) {
       // Split
@@ -220,10 +232,15 @@ export class CustomTextareaComponent implements OnInit {
         content = frag;
       }
 
-      span_container.className = "span-container";
+      span_container.className = "segment-container";
+
+      this.lastSegmentId++;
+      span_container.setAttribute("data-segment-id", this.lastSegmentId.toString());
+
       node.parentNode.replaceChild(span_container, node);
 
       node = span_container;
+
 
       let portal = new ComponentPortal(TagComponent);
       let portalHost = new DomPortalHost(
@@ -238,14 +255,266 @@ export class CustomTextareaComponent implements OnInit {
       let element: ComponentRef<TagComponent> = ref;
       element.instance.setContent(content);
       element.instance.setTag(tag);
+      element.instance.setDocument(this.document);
 
       console.log(span_container, tag);
+
+      let whatevs = this.addSegToStructure(span_container,
+        sel_so,
+        sel_eo,
+        sel_sc,
+        sel_ec,
+        tag);
+      //console.log(seg);
+      //console.log("start sel ", this.lastSelection.startOffset);
+      //console.log("end sel ", this.lastSelection.startOffset);
 
     } else {
       console.log(
         "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
       );
     }
+  }
+
+  private getNewIdFromSegmentArray(segments : Segment[], currentID : number) : number{
+    let id : number = currentID;
+    segments.forEach((v, i, a) => {
+       if(v.id > id){
+        id = v.id;
+       }
+       //console.log(v.id);
+       if(v.children != null){
+          let innerID :number = this.getNewIdFromSegmentArray(v.children, id); 
+       }
+    });
+    return id + 1;
+  }
+
+  private addSegToStructure(span_container : HTMLElement,
+      startOffset: number,
+      endOffset: number,
+      startContainer: Node,
+      endContainer: Node,
+      tag : Tag) : any {
+    console.log("Tag features: ", tag.features);
+
+      let documents = this.documentService.loadDocuments();
+      let id = this.document.header.id;
+      let actualDoc : Document = this.document;
+      
+      let tagText = "";
+      let inners : any = span_container.getElementsByClassName("tag-inner");
+      inners = inners[0]; 
+      let tagInner : HTMLElement = inners; 
+      let children : Segment[];
+
+      console.log("before replace doc ", actualDoc);
+      debugger;
+      tagInner.childNodes.forEach((v, k, p)=> {
+        let iHateTS : any = v;
+        let child : HTMLElement = iHateTS;
+        if(child.tagName != "DIV"){
+          tagText += v.textContent;
+        }
+        /*if(child.className == "segment-container"){
+          children.push(this.addSegToStructure(span_container,
+            startOffset,
+            endOffset,
+            startContainer,
+            endContainer,
+            tag));
+        }*/
+      });
+
+      //console.log(actualDoc.body.segments);
+
+
+      this.lastSegmentId++;
+      let segment : Segment = {
+        features : tag.features,
+        state : "active",
+        id: this.lastSegmentId,
+        children : [],
+        text : tagText
+      }
+
+      //debugger;
+      let node = span_container;
+      while(node.parentElement.getAttribute("data-segment-id") == ""){
+        node = node.parentElement;
+      } 
+      let segmentID = Number.parseInt(node.parentElement.getAttribute("data-segment-id"));
+      debugger;
+      
+      console.log("docseg ", segmentID);
+      console.log("before replace doc 2", actualDoc);
+      debugger;
+      this.lastSegmentId++;
+      segment = this.addSegmentIntoText(
+        CustomTextareaComponent.findSegmentById(this.document.body.segments, segmentID),
+        startOffset,
+        endOffset,
+        this.lastSegmentId,
+        segment,
+        span_container);
+      this.lastSegmentId += 2;
+      console.log("docseg children", segment.children);
+
+      console.log("last seg id ", this.lastSegmentId);
+      console.log("id to replace ", segmentID);
+      console.log("just before replace doc ", actualDoc);
+      debugger;
+      actualDoc = CustomTextareaComponent.replaceSegmentInDocument(actualDoc, segment, segmentID);
+
+      console.log("actual doc ", actualDoc);
+
+      documents[id] = actualDoc;
+
+      this.documentService.storeDocuments(documents);
+    return true;
+  }
+
+  public static removeFeaturesFromSegmentID(id : number, documentService : DocumentService, document : Document){
+    let docs : Document[] = documentService.loadDocuments();
+    document.body.segments = this.recursiveFeatuersRemoval(document.body.segments, id);
+    docs[document.header.id] = document;
+    documentService.storeDocuments(docs);
+  }
+
+  private static recursiveFeatuersRemoval(segments : Segment[], id : number) : Segment[]{
+    if(segments.length == 0){
+      return [];
+    }
+
+    for(let s of segments){
+      if(s.id == id){
+        s.features = [];
+        return segments;
+      }
+      if(s.children != null && s.children != []){
+        s.children = this.recursiveFeatuersRemoval(s.children, id);
+      }
+    }
+    return segments;
+  }
+  /*
+  public static removeFeaturesBySegmentId(document: Document, id: number){
+    let s = this.findSegmentById(document.body.segments, id);
+    s.features = [];
+    this.replaceSegmentInDocument(document, s, id);
+  }
+  */
+  private static findSegmentById(segments: Segment[], id : number) : Segment {
+    if(segments.length == 0){
+      return null;
+    }
+
+    for(let s of segments){
+      if(s.id == id){
+        return s;
+      }
+
+      let cfind = this.findSegmentById(s.children, id);
+      if(cfind != null){
+        return cfind;
+      }
+    }
+
+    return null;
+  }
+
+  private static replaceSegmentInDocument(doc : Document, segment : Segment, id : number ) : Document{
+    doc.body.segments = this.recursiveReplaceSegments(doc.body.segments, segment, id);
+    return doc;
+  }
+
+  private static recursiveReplaceSegments(segments : Segment[], segment : Segment, id : number) : Segment[]{
+    for(let i = 0; i < segments.length; i++){
+      console.log(segments[i].id, " vs ",  id);
+      if(segments[i].id == id){
+        console.log("same id");
+        segments[i] = segment;
+        break;
+      }
+      if(segments[i].children != null){
+        let new_children =  this.recursiveReplaceSegments(segments[i].children, segment, id);
+        if(segments[i].children == new_children)
+          break;
+      }
+    }
+    return segments;
+  }
+
+  private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment, span_container : Node) : Segment{
+    console.log("seg parent (seg into text): ", segmentParent);
+    let parent_childNodes = span_container.parentElement.childNodes;
+    let offs = 0;
+    let i = 0;
+    for(i=0; i < parent_childNodes.length; i++){
+      let child = <HTMLElement> parent_childNodes[i];
+      if(child == span_container){
+        break;
+      }
+      if(child.tagName == 'BR'){
+        offs++;
+      }
+
+      if(child.innerText != undefined){
+        offs += child.innerText.length;
+      } else {
+        offs += child.textContent.length;
+      }
+    }
+    debugger;
+    offsetStart += offs;
+    offsetEnd += offs;
+    let before = segmentParent.text.substring(0, offsetStart);
+    //let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
+    let end = segmentParent.text.substring(offsetEnd, segmentParent.text.length);
+
+    console.log("seg parent -> ", segmentParent);
+    console.log("seg parent text -> ", segmentParent.text);
+    console.log("selected text -> ", segmentParent.text.substring(offsetStart, offsetEnd));
+    console.log("offset start -> ", offsetStart);
+    console.log("offset end -> ", offsetEnd);
+    console.log("text before -> ", before);
+    console.log("text after-> ", end);
+    let segBefore : Segment= {
+      children : [],
+      id : nextID,
+      text: before,
+      state : "active",
+      features : []
+    };
+
+    let segAfter : Segment = {
+      children : [],
+      id : nextID+1,
+      text : end,
+      state : "active",
+      features : []
+    }
+    segmentParent.children.push(segBefore, segment, segAfter);
+    segmentParent.text = "";
+    return segmentParent;
+  }
+
+  private findSegmentByText(segments : Segment[], text : string) : Segment{
+    let seg : Segment = null;
+    segments.forEach((v, i, a) => {
+      //console.log(v.text);
+      //console.log(text);
+      //console.log(v);
+      if(v.text.indexOf(text) != -1){
+        seg = v;
+      }
+      if(v.children.length == 0){
+        let childSeg : Segment = this.findSegmentByText(v.children, text);
+        if(childSeg != null)
+          seg = childSeg;
+      }
+   });
+    return seg;
   }
 
   private findTagByFeatures(n: ColorizedNode, features: string[]): ColorizedNode {
@@ -278,7 +547,8 @@ export class CustomTextareaComponent implements OnInit {
 
     if (n.children != null) {
       for (let c of n.children) {
-        let lastN = this.findTagByFeatures(c, features.splice(1));
+        let new_feats = features.slice(0);
+        let lastN = this.findTagByFeatures(c, new_feats.splice(1));
         if (lastN != null) {
           return lastN;
         }
@@ -287,6 +557,8 @@ export class CustomTextareaComponent implements OnInit {
   }
 
   load(d: Document, t: TreeFile) {
+    this.document = d;
+    this.tree = t;
     console.log('Editor: Loading...');
 
     if (t == null) {
@@ -306,40 +578,58 @@ export class CustomTextareaComponent implements OnInit {
     let el: HTMLElement = this.editor.nativeElement;
 
     for (let s of d.body.segments) {
-      let divSegment = document.createElement('div');
-      divSegment.className = "segment-container";
-
-      if (s.features.length == 0) {
-        divSegment.innerHTML = s.text.replace(/\n/g, '<br/>');
-      } else {
-        let spanEl = document.createElement('span');
-        spanEl.innerText = s.text;
-
-
-        let portal = new ComponentPortal(TagComponent);
-        let portalHost = new DomPortalHost(
-          divSegment,
-          this.resolver,
-          this.appRef,
-          this.injector
-        );
-
-        let ref = portalHost.attachComponentPortal(portal);
-        let tag = this.findTagByFeatures(ct, s.features);
-
-        if (tag == null) {
-          console.error("Invalid tag!");
-          return;
-        }
-
-        console.log("Setting tag to " + tag);
-
-        let element: ComponentRef<TagComponent> = ref;
-        element.instance.setContent(spanEl);
-        element.instance.setTag(tag);
-      }
-
-      el.appendChild(divSegment);
+      this.parseSegment(ct, el, s);
     }
+  }
+
+  parseSegment(ct : ColorizedNode, el: HTMLElement, s: Segment){
+    let divSegment = document.createElement('div');
+    divSegment.className = "segment-container";
+    divSegment.setAttribute("data-segment-id", s.id.toString())
+    
+    this.lastSegmentId = Math.max(this.lastSegmentId, s.id);
+    let content;
+    if(s.children.length == 0){
+      content = document.createElement('span');
+      content.innerText = s.text;
+    } else {
+      content = document.createElement('div');
+      content.className = 'segment-container';
+
+      for (let segment of s.children) {
+        this.parseSegment(ct, content, segment);
+      }
+    }
+
+    let portal = new ComponentPortal(TagComponent);
+    let portalHost = new DomPortalHost(
+      divSegment,
+      this.resolver,
+      this.appRef,
+      this.injector
+    );
+
+    let ref = portalHost.attachComponentPortal(portal);
+
+    console.log("Features: ", s.features);
+    console.log("Segment: ", s);
+
+    let tag = this.findTagByFeatures(ct, s.features);
+
+    if (tag == null) {
+      console.info("Features null!");
+      content.setAttribute("data-segment-id", s.id.toString());
+      el.appendChild(content);
+      return;
+    }
+
+    console.log("Setting tag to ", tag);
+
+    let element: ComponentRef<TagComponent> = ref;
+    element.instance.setContent(content);
+    element.instance.setTag(tag);
+    element.instance.setDocument(this.document);
+
+    el.appendChild(divSegment);
   }
 }

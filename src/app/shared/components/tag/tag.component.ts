@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { HSLColor } from "Models/hslcolor/HSLColor";
 import { ColorizedNode } from "Models/tree/ColorizedTree";
-import { findNode } from "@angular/compiler";
+import { CustomTextareaComponent } from "Components/textedit/components/customtextarea.component";
+import { Document } from "Models/document/document";
+import { DocumentService } from "Services/document/DocumentService";
 
 @Component({
   selector: "doctt-tag",
@@ -12,12 +14,13 @@ export class TagComponent implements OnInit {
   private element: Node;
   private tagNode: ColorizedNode;
   private tooltip: string;
+  private document : Document;
 
   private og_el: Node = null;
   @ViewChild("tag") tag: ElementRef | undefined;
   @ViewChild("tagInner") content: ElementRef | undefined;
 
-  constructor() { }
+  constructor(private documentService : DocumentService) { }
 
   ngOnInit(): void { }
 
@@ -38,7 +41,7 @@ export class TagComponent implements OnInit {
       if (el.className == "tag-inner" && tagInner == null) {
         tagInner = el;
       } 
-      if (el.className == "span-container" && spanContainer == null) {
+      if (el.className == "segment-container" && spanContainer == null) {
         spanContainer = el;
       }
       if (el.tagName == "DOCTT-TAG" && doctttag == null) {
@@ -72,6 +75,10 @@ export class TagComponent implements OnInit {
       docFragment.append(el);
     }
 
+    let id = Number.parseInt(spanContainer.getAttribute("data-segment-id"));
+    //CustomTextareaComponent.removeFeaturesBySegmentId(this.document, id);
+    CustomTextareaComponent.removeFeaturesFromSegmentID(id, this.documentService, this.document);
+
     if(father != null){
       father.insertBefore(docFragment, spanContainer);
       father.removeChild(spanContainer);
@@ -94,6 +101,10 @@ export class TagComponent implements OnInit {
 
   private setColor(color: HSLColor) {
     this.tag.nativeElement.style.backgroundColor = color.toCSS();
+  }
+
+  setDocument(document : Document){
+    this.document = document;
   }
 
   setTag(tag: ColorizedNode) {
