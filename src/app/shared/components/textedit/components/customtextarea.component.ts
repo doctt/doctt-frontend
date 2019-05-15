@@ -233,9 +233,14 @@ export class CustomTextareaComponent implements OnInit {
       }
 
       span_container.className = "segment-container";
+
+      this.lastSegmentId++;
+      span_container.setAttribute("data-segment-id", this.lastSegmentId.toString());
+
       node.parentNode.replaceChild(span_container, node);
 
       node = span_container;
+
 
       let portal = new ComponentPortal(TagComponent);
       let portalHost = new DomPortalHost(
