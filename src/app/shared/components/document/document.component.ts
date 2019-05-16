@@ -21,9 +21,9 @@ interface KV {
     styleUrls: ['./document.component.scss']
 })
 export class DocumentComponent implements OnInit, AfterViewInit {
-
+    public document: Document = null;
+    
     private id: number;
-    private document: Document = null;
     private tree: TreeFile;
 
     private displayedColumns: string[] = [

@@ -19,7 +19,7 @@ export class FloatingTagChooserComponent implements OnInit {
 
     @Output() tagSelection = new EventEmitter<Tag>();
     
-    private currentNode: ColorizedNode;
+    public currentNode: ColorizedNode;
     
     constructor(private treeService: TreeService) {
         if (treeService.getActualTree() == null) {

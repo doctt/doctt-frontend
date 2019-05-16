@@ -22,6 +22,8 @@ export class DocumentUploadComponent implements OnInit {
   @ViewChild("xmlUpload") xmlUpload: XmlUploadComponent;
   @ViewChild("resultBox") resultBox: ElementRef;
 
+  public isActive = false;
+
   ngOnInit(): void {}
 
   jsHighlight(json: string): string {

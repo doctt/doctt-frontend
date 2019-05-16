@@ -11,7 +11,7 @@ import { FormGroup, FormControl } from "@angular/forms";
   ]
 })
 export class XmlUploadComponent {
-  private myFormGroup: FormGroup = new FormGroup({
+  public myFormGroup: FormGroup = new FormGroup({
     xmlFileUpload: new FormControl()
   });
 
@@ -20,7 +20,7 @@ export class XmlUploadComponent {
   private debug: boolean = false;
 
   @ViewChild("progressBar") progressBar: MatProgressBar;
-  private progress: number;
+  public progress: number;
   
   @Output('fileUploaded')
   private fileUploaded: EventEmitter<Document> = new EventEmitter<Document>();

@@ -18,6 +18,9 @@
             "Services/*": ["src/app/services/*"],
             "Directives/*": ["src/app/directives/*"],
             "Components/*": ["src/app/shared/components/*"],
+            "~*": [
+                "node_modules/"
+            ]
         },
         "baseUrl": "../",
         "typeRoots": [

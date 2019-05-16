@@ -8,11 +8,11 @@ import { Document as DocTTDocument, Segment } from 'Models/document/document';
 })
 export class DocumentPreviewComponent implements OnInit {
     @Input() 
-    private doc: DocTTDocument;
-    private segments : Segment[];
+    public doc: DocTTDocument;
+    public segments : Segment[];
 
     @Input()
-    private showButtons : boolean = true;
+    public showButtons : boolean = true;
     
     constructor() { 
     }
@@ -33,12 +33,12 @@ export class DocumentPreviewComponent implements OnInit {
         this.segments = segments;
     }
 
-    parseDate(date: string) : string {
+    parseDate(date: Date) : string {
         if(date == undefined){
             return "";
         }
 
-        let d = new Date(date);
+        let d = date;
         return `${d.getFullYear()}-${('0' + d.getMonth()).substr(-2)}-${('0' + d.getDate()).substr(-2)}`;
     }
 

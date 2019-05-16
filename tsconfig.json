@@ -1,32 +1,48 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "noImplicitAny": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "lib": [
-            "es6",
-            "dom"
-        ],
-        "paths": {
-          "*": ["types/*"],
-            "Models/*": ["src/app/models/*"],
-            "Services/*": ["src/app/services/*"],
-            "Directives/*": ["src/app/directives/*"],
-            "Components/*": ["src/app/shared/components/*"],
-            "Modules/*": ["src/app/modules/*"]
-        },
-        "baseUrl": "./",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "esModuleInterop": true
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "paths": {
+      "*": [
+        "types/*"
+      ],
+      "Models/*": [
+        "src/app/models/*"
+      ],
+      "Services/*": [
+        "src/app/services/*"
+      ],
+      "Directives/*": [
+        "src/app/directives/*"
+      ],
+      "Components/*": [
+        "src/app/shared/components/*"
+      ],
+      "Modules/*": [
+        "src/app/modules/*"
+      ],
+      "~*": [
+        "node_modules/"
+      ]
     },
-    "exclude": [
-        "node_modules"
-    ]
+    "baseUrl": "./",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.aot.ts"
+  ]
 }

@@ -14,7 +14,7 @@ import { Document } from 'Models/document/document';
 })
 
 export class HomeComponent  implements OnInit, AfterContentInit {
-    private documents : Document[] = [];
+    public documents : Document[] = [];
 
     constructor(private documentService: DocumentService){
     }

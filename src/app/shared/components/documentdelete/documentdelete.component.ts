@@ -10,7 +10,7 @@ import { DocumentService } from 'Services/document/DocumentService';
 })
 export class DocumentDeleteComponent implements OnInit {
 
-    private document : Document;
+    public document : Document;
     private id: number;
 
 

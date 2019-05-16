@@ -12,9 +12,10 @@ import { Tag } from "Models/tag/Tag";
   styleUrls: ["./tag.component.scss"]
 })
 export class TagComponent implements OnInit {
+  public tooltip: string;
+  
   private element: Node;
   private tagNode: Tag;
-  private tooltip: string;
   private document : Document;
 
   private og_el: Node = null;

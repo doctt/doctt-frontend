@@ -47,6 +47,7 @@ module.exports = {
       {
         test: /\.ts$/,
         loaders: [
+          'babel-loader',
           {
             loader: "awesome-typescript-loader",
             options: {
