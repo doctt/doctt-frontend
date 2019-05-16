@@ -22,7 +22,7 @@ export class XmlUploadComponent {
   @ViewChild('progressBar') progressBar: MatProgressBar;
   public progress: number;
 
-  @Output('fileUploaded')
+  @Output()
   private fileUploaded: EventEmitter<Document> = new EventEmitter<Document>();
 
   private fileUploadEvent(e: FileInput) {
