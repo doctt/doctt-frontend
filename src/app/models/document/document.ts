@@ -27,10 +27,10 @@ class File {
     public version: number;
     public data: Document;
 
-    constructor(version: number, data: Document){
+    constructor(version: number, data: Document) {
         this.version = version;
         this.data = data;
     }
-};
+}
 
 export {File, Document, Body, Segment, Header};
