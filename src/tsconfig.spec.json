@@ -1,34 +1,14 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "noImplicitAny": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "lib": [
-            "es6",
-            "dom"
-        ],
-        "paths": {
-          "*": ["types/*"],
-            "Models/*": ["src/app/models/*"],
-            "Services/*": ["src/app/services/*"],
-            "Directives/*": ["src/app/directives/*"],
-            "Components/*": ["src/app/shared/components/*"],
-            "~*": [
-                "node_modules/"
-            ]
-        },
-        "baseUrl": "../",
-        "typeRoots": [
-            "../node_modules/@types"
-        ],
-        "esModuleInterop": true
-    },
-    "exclude": [
-        "node_modules"
-    ]
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/spec",
+  },
+  "files": [
+    "test.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
 }

@@ -1,45 +1,45 @@
-import { TreeComponent } from "./tree.component";
-import { TreeService } from "Services/tree/Tree";
-import { TreeParserService } from "Services/parser/tree/TreeParser";
-import { TreeContent, TreeNode } from "Models/tree/Tree";
-import fs = require('fs');
+import { TreeComponent } from './tree.component';
+import { TreeService } from 'Services/tree/Tree';
+import { TreeParserService } from 'Services/parser/tree/TreeParser';
+import { TreeContent, TreeNode } from 'Models/tree/Tree';
+const fs = require('fs');
 
-test("toDataSource", () => {
-  let treeParser : TreeParserService = new TreeParserService();
-  let treeService : TreeService = new TreeService(treeParser);
-  let tree : TreeComponent = new TreeComponent(treeService);
+test('toDataSource', () => {
+  const treeParser: TreeParserService = new TreeParserService();
+  const treeService: TreeService = new TreeService(treeParser);
+  const tree: TreeComponent = new TreeComponent(treeService);
 
-  let xmlfile = fs.readFileSync("resources/test/xml/layer1.xml").toString();
-  let doc: Document = (new DOMParser()).parseFromString(
+  const xmlfile = fs.readFileSync('resources/test/xml/layer1.xml').toString();
+  const doc: Document = (new DOMParser()).parseFromString(
       xmlfile,
-      "application/xml"
+      'application/xml'
   );
-  let parsedTree = treeParser.parseXML(doc); 
-  localStorage.setItem("tree", JSON.stringify({tree : parsedTree}));
-  
-  let content : TreeContent = treeService.getActualTree().data;
-  let arr = [];
+  const parsedTree = treeParser.parseXML(doc);
+  localStorage.setItem('tree', JSON.stringify({tree : parsedTree}));
+
+  const content: TreeContent = treeService.getActualTree().data;
+  const arr = [];
   arr[0] = content.root;
-  //expect(tree.toDataSource(content.root)).toEqual(arr); not working due to color changes
+  // expect(tree.toDataSource(content.root)).toEqual(arr); not working due to color changes
 } );
 
-test("load", () => {
-  let treeParser : TreeParserService = new TreeParserService();
-  let treeService : TreeService = new TreeService(treeParser);
-  let tree : TreeComponent = new TreeComponent(treeService);
+test('load', () => {
+  const treeParser: TreeParserService = new TreeParserService();
+  const treeService: TreeService = new TreeService(treeParser);
+  const tree: TreeComponent = new TreeComponent(treeService);
 
-  let xmlfile = fs.readFileSync("resources/test/xml/layer1.xml").toString();
-  let doc: Document = (new DOMParser()).parseFromString(
+  const xmlfile = fs.readFileSync('resources/test/xml/layer1.xml').toString();
+  const doc: Document = (new DOMParser()).parseFromString(
       xmlfile,
-      "application/xml"
+      'application/xml'
   );
-  let parsedTree = treeParser.parseXML(doc); 
-  localStorage.setItem("tree", JSON.stringify({tree : parsedTree}));
-  
-  let content : TreeContent = treeService.getActualTree().data;
+  const parsedTree = treeParser.parseXML(doc);
+  localStorage.setItem('tree', JSON.stringify({tree : parsedTree}));
+
+  const content: TreeContent = treeService.getActualTree().data;
   tree.load(content);
 
-  //lexpect(tree.dataSource.data).toEqual(tree.toDataSource(content.root));
+  // lexpect(tree.dataSource.data).toEqual(tree.toDataSource(content.root));
 } );
 
 

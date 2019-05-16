@@ -1,7 +1,10 @@
 @import "~@angular/material/_theming.scss";
 @import "./modules/colors";
 
-@import "~font-awesome/css/font-awesome.css";
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome.scss";
+
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 @include mat-core();
 

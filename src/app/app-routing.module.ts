@@ -13,13 +13,13 @@ import { TreeModule } from 'Modules/tree/tree.module';
 import { FloatingTagChooserComponent } from 'Components/floatintagchooser/floatingtagchooser.component';
 
 const appRoutes: Routes = [
-  { path: "", component: HomeComponent },
-  { path: "editor", component: TextEditComponent },
-  { path: "documents/upload", component: DocumentUploadComponent },
-  { path: "documents/view/:id", component: DocumentComponent },
-  { path: "documents/delete/:id", component: DocumentDeleteComponent },
-  { path: "dev/ftc", component: FloatingTagChooserComponent },
-  { path: "**", component: PageNotFoundComponent }
+  { path: '', component: HomeComponent },
+  { path: 'editor', component: TextEditComponent },
+  { path: 'documents/upload', component: DocumentUploadComponent },
+  { path: 'documents/view/:id', component: DocumentComponent },
+  { path: 'documents/delete/:id', component: DocumentDeleteComponent },
+  { path: 'dev/ftc', component: FloatingTagChooserComponent },
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({

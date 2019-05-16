@@ -1,23 +1,33 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "declaration": false,
+    "module": "es2015",
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "importHelpers": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "types": [
+      "jest",
+      "node"
+    ],
     "lib": [
-      "es6",
+      "es2018",
       "dom"
     ],
     "paths": {
-      "*": [
-        "types/*"
-      ],
       "Models/*": [
         "src/app/models/*"
+      ],
+      "Modules/*": [
+        "src/app/modules/*"
       ],
       "Services/*": [
         "src/app/services/*"
@@ -28,21 +38,9 @@
       "Components/*": [
         "src/app/shared/components/*"
       ],
-      "Modules/*": [
-        "src/app/modules/*"
-      ],
       "~*": [
         "node_modules/"
       ]
     },
-    "baseUrl": "./",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "esModuleInterop": true
-  },
-  "exclude": [
-    "node_modules",
-    "**/*.aot.ts"
-  ]
+  }
 }

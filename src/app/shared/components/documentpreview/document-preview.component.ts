@@ -24,7 +24,7 @@ export class DocumentPreviewComponent implements OnInit {
             if(c == 5){
                 break;
             }
-            if(s.text.trim() != ""){
+            if(s.text.trim() !== ''){
                 segments.push(s);
                 c++;
             }
@@ -33,16 +33,16 @@ export class DocumentPreviewComponent implements OnInit {
         this.segments = segments;
     }
 
-    parseDate(date: Date) : string {
-        if(date == undefined){
+    parseDate(date: string) : string {
+        if(date === undefined){
             return "";
         }
 
-        let d = date;
+        const d = new Date(date);
         return `${d.getFullYear()}-${('0' + d.getMonth()).substr(-2)}-${('0' + d.getDate()).substr(-2)}`;
     }
 
     visitDocument(){
-        
+
     }
 }
