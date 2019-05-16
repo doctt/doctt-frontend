@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Document } from 'Models/document/document';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { DocumentService } from 'Services/document/DocumentService';
 
 @Component({
@@ -10,24 +10,26 @@ import { DocumentService } from 'Services/document/DocumentService';
 })
 export class DocumentDeleteComponent implements OnInit {
 
-    public document : Document;
+    public document: Document;
     private id: number;
 
 
     constructor(private route: ActivatedRoute,
-        private router: Router,
-        private documentService: DocumentService) {
+                private router: Router,
+                private documentService: DocumentService) {
     }
 
-    ngOnInit(): void { 
-        this.route.params.subscribe(params => {
-            this.id = params.id;
+    ngOnInit(): void {
+        const routeSnapshot: ActivatedRouteSnapshot = this.route.snapshot;
+
+        if (routeSnapshot.params.id !== undefined) {
+            this.id = parseInt(routeSnapshot.params.id, 10);
             this.document = this.documentService.getDocument(this.id);
-        });
+        }
     }
 
     doDelete(): void {
-        console.log("Removing document...");
+        console.log('Removing document...');
         this.documentService.removeDocument(this.id);
         this.router.navigateByUrl(`/`);
     }

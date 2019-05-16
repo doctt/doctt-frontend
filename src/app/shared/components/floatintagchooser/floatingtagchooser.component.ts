@@ -3,7 +3,7 @@ import { TreeFile } from 'Models/tree/Tree';
 import { TreeService } from 'Services/tree/Tree';
 import { TreeColorizer } from 'Services/tree/TreeColorizer';
 import { ColorizedNode, ColorizedUtilities } from 'Models/tree/ColorizedTree';
-import { IconColorDirective } from 'Directives/iconcolor/iconcolor.directive'
+import { IconColorDirective } from 'Directives/iconcolor/iconcolor.directive';
 import { Tag } from 'Models/tag/Tag';
 
 
@@ -14,37 +14,45 @@ import { Tag } from 'Models/tag/Tag';
     providers: [IconColorDirective]
 })
 export class FloatingTagChooserComponent implements OnInit {
-    @ViewChild("ftc")
-    private ftc : ElementRef<HTMLElement>;
+    @ViewChild('ftc')
+    private ftc: ElementRef<HTMLElement>;
 
     @Output() tagSelection = new EventEmitter<Tag>();
-    
+
     public currentNode: ColorizedNode;
-    
+
     constructor(private treeService: TreeService) {
         if (treeService.getActualTree() == null) {
-            console.warn("Tree not loaded!");
+            console.warn('Tree not loaded!');
         } else {
             this.load(treeService.getActualTree());
         }
     }
 
-    private selectNode(node: ColorizedNode){
-        let features = ColorizedUtilities.getFeatures(this.currentNode);
-        if(node.children == null || this.currentNode == node){
+    private selectNode(node: ColorizedNode) {
+        const features = ColorizedUtilities.getFeatures(this.currentNode);
+        if (node.children == null || this.currentNode == node) {
             // Leaf
             node.parent = this.currentNode.parent;
-            features.push(node.name);
+
+            if (this.currentNode === node) {
+                // Clicked a non leaf node, won't add himself again
+            } else {
+                features.push(node.name);
+            }
+
+
+            debugger;
 
             this.tagSelection.emit({
                 name: node.name,
                 color: node.color,
-                features: features
-            })
+                features
+            });
             return;
         }
 
-        if(this.currentNode.parent == node){
+        if (this.currentNode.parent == node) {
             // Going Up
             this.currentNode = node;
         } else {
@@ -54,13 +62,13 @@ export class FloatingTagChooserComponent implements OnInit {
         }
     }
 
-    private load(tree: TreeFile){
+    private load(tree: TreeFile) {
         this.currentNode = TreeColorizer.colorize(tree.data.root)[0];
     }
 
-    public moveTo(x: number, y: number){
-        this.ftc.nativeElement.style.top = y + "px";
-        this.ftc.nativeElement.style.left = x + "px";
+    public moveTo(x: number, y: number) {
+        this.ftc.nativeElement.style.top = y + 'px';
+        this.ftc.nativeElement.style.left = x + 'px';
         this.ftc.nativeElement.style.position = 'absolute';
     }
 

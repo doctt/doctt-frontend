@@ -12,7 +12,7 @@ export class DocumentService {
     public loadDocuments(): Document[] {
         let docs = [];
 
-        if (localStorage.getItem(DocumentService.LS_TAG) != '') {
+        if (localStorage.getItem(DocumentService.LS_TAG) !== '') {
             docs = JSON.parse(localStorage.getItem(DocumentService.LS_TAG));
             if (docs == null) {
                 return [];
@@ -34,7 +34,7 @@ export class DocumentService {
     }
 
     public getDocument(id: number): Document {
-        if (this.documents == null) {
+        if (this.documents === undefined) {
             this.loadDocuments();
         }
 
@@ -74,7 +74,7 @@ export class DocumentService {
         this.documents = this.loadDocuments();
         let idx = -1;
         for (const d of this.documents) {
-            if (d.header.id == id) {
+            if (d.header.id === id) {
                 idx = this.documents.indexOf(d);
             }
         }

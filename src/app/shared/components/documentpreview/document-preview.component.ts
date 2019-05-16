@@ -7,24 +7,24 @@ import { Document as DocTTDocument, Segment } from 'Models/document/document';
     styleUrls: ['./document-preview.component.scss'],
 })
 export class DocumentPreviewComponent implements OnInit {
-    @Input() 
+    @Input()
     public doc: DocTTDocument;
-    public segments : Segment[];
+    public segments: Segment[];
 
     @Input()
-    public showButtons : boolean = true;
-    
-    constructor() { 
+    public showButtons = true;
+
+    constructor() {
     }
 
     ngOnInit(): void {
-        let c = 0; 
-        let segments = [];
-        for(let s of this.doc.body.segments){
-            if(c == 5){
+        let c = 0;
+        const segments = [];
+        for (const s of this.doc.body.segments) {
+            if (c === 5) {
                 break;
             }
-            if(s.text.trim() !== ''){
+            if (s.text.trim() !== '') {
                 segments.push(s);
                 c++;
             }
@@ -33,16 +33,16 @@ export class DocumentPreviewComponent implements OnInit {
         this.segments = segments;
     }
 
-    parseDate(date: string) : string {
-        if(date === undefined){
-            return "";
+    parseDate(date: string): string {
+        if (date === undefined) {
+            return '';
         }
 
         const d = new Date(date);
         return `${d.getFullYear()}-${('0' + d.getMonth()).substr(-2)}-${('0' + d.getDate()).substr(-2)}`;
     }
 
-    visitDocument(){
+    visitDocument() {
 
     }
 }

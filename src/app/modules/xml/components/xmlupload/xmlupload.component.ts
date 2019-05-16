@@ -1,11 +1,11 @@
-import { Component, ViewChild, Output, EventEmitter } from "@angular/core";
-import { MatProgressBar } from "@angular/material";
-import { FileInputComponent, FileInput } from "ngx-material-file-input";
-import { FormGroup, FormControl } from "@angular/forms";
+import { Component, ViewChild, Output, EventEmitter } from '@angular/core';
+import { MatProgressBar } from '@angular/material';
+import { FileInputComponent, FileInput } from 'ngx-material-file-input';
+import { FormGroup, FormControl } from '@angular/forms';
 @Component({
   selector: "doctt-xmlupload",
-  templateUrl: "./xmlupload.component.html",
-  styleUrls: ["./xmlupload.component.scss"],
+  templateUrl: './xmlupload.component.html',
+  styleUrls: ['./xmlupload.component.scss'],
   providers: [
     FileInputComponent
   ]
@@ -15,36 +15,36 @@ export class XmlUploadComponent {
     xmlFileUpload: new FormControl()
   });
 
-  private files : FileInput = null;
+  private files: FileInput = null;
 
-  private debug: boolean = false;
+  private debug = false;
 
-  @ViewChild("progressBar") progressBar: MatProgressBar;
+  @ViewChild('progressBar') progressBar: MatProgressBar;
   public progress: number;
-  
+
   @Output('fileUploaded')
   private fileUploaded: EventEmitter<Document> = new EventEmitter<Document>();
 
-  private fileUploadEvent(e : FileInput){
+  private fileUploadEvent(e: FileInput) {
     this.files = e;
   }
-  
+
 
   ngOnInit(): void {
-    this.progressBar._elementRef.nativeElement.style.display = "hidden";
+    this.progressBar._elementRef.nativeElement.style.display = 'hidden';
     this.myFormGroup.get('xmlFileUpload').valueChanges.subscribe(this.fileUploadEvent.bind(this));
   }
 
   load(): Promise<Document> {
-    if(this.files == null){
+    if (this.files == null) {
       return null;
     }
 
-    let fileReader = new FileReader();
-    this.progressBar._elementRef.nativeElement.style.display = "block";
+    const fileReader = new FileReader();
+    this.progressBar._elementRef.nativeElement.style.display = 'block';
     fileReader.readAsText(this.files.files[0]);
 
-    let promise = new Promise<Document>((resolve, reject) => {
+    const promise = new Promise<Document>((resolve, reject) => {
       this.progress = 0;
       fileReader.onloadend = e => {
         if (this.debug) {
@@ -53,9 +53,9 @@ export class XmlUploadComponent {
           console.log(fileReader.result.toString());
         }
 
-        let document = new DOMParser().parseFromString(
+        const document = new DOMParser().parseFromString(
           fileReader.result.toString(),
-          "text/xml"
+          'text/xml'
         );
 
         this.fileUploaded.emit(document);

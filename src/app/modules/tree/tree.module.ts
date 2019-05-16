@@ -8,8 +8,8 @@ import { DocTTCommonModule } from 'Modules/doctt_common/doctt_common.module';
 import { TreeComponent } from 'Components/tree/tree.component';
 
 const treeRoutes: Routes = [
-    { path: "tree", component: TreeViewComponent },
-    { path: "tree/upload", component: TreeUploadComponent }
+    { path: 'tree', component: TreeViewComponent },
+    { path: 'tree/upload', component: TreeUploadComponent }
 ];
 
 @NgModule({

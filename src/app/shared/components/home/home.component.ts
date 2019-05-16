@@ -14,9 +14,9 @@ import { Document } from 'Models/document/document';
 })
 
 export class HomeComponent  implements OnInit, AfterContentInit {
-    public documents : Document[] = [];
+    public documents: Document[] = [];
 
-    constructor(private documentService: DocumentService){
+    constructor(private documentService: DocumentService) {
     }
 
     ngAfterContentInit(): void {
@@ -24,6 +24,6 @@ export class HomeComponent  implements OnInit, AfterContentInit {
     }
 
     ngOnInit(): void {
-        
+
     }
 }

@@ -11,53 +11,38 @@ import {
   ApplicationRef,
   ComponentRef,
   Input
-} from "@angular/core";
-import { TagService } from "../../../../services/tag/TagService";
-import { MatChip, MatChipBase, DateAdapter } from "@angular/material";
-import { TagComponent } from "../../tag/tag.component";
+} from '@angular/core';
+import { TagService } from '../../../../services/tag/TagService';
+import { MatChip, MatChipBase, DateAdapter } from '@angular/material';
+import { TagComponent } from '../../tag/tag.component';
 import {
   ComponentPortal,
   Portal,
   CdkPortalOutlet,
   DomPortalHost,
   PortalHost
-} from "@angular/cdk/portal";
-import { registerNgModuleType } from "@angular/core/src/linker/ng_module_factory_loader";
-import { createComponent } from "@angular/compiler/src/core";
-import { flushModuleScopingQueueAsMuchAsPossible } from "@angular/core/src/render3/jit/module";
-import { isFakeMousedownFromScreenReader } from "@angular/cdk/a11y";
-import { FloatingTagChooserComponent } from "../../floatintagchooser/floatingtagchooser.component";
-import { Event } from "@angular/router";
-import { Tag } from "Models/tag/Tag";
-import { Document, Segment } from "Models/document/document";
-import { TreeContent, TreeFile, TreeNode } from "Models/tree/Tree";
-import { ColorizedNode, ColorizedTree } from "Models/tree/ColorizedTree";
-import { TreeService } from "Services/tree/Tree";
-import { isFulfilled } from "q";
-import { DialogService } from "Services/userfeedback/DialogService";
-import { DocumentService } from "Services/document/DocumentService";
+} from '@angular/cdk/portal';
+import { registerNgModuleType } from '@angular/core/src/linker/ng_module_factory_loader';
+import { createComponent } from '@angular/compiler/src/core';
+import { flushModuleScopingQueueAsMuchAsPossible } from '@angular/core/src/render3/jit/module';
+import { isFakeMousedownFromScreenReader } from '@angular/cdk/a11y';
+import { FloatingTagChooserComponent } from '../../floatintagchooser/floatingtagchooser.component';
+import { Event } from '@angular/router';
+import { Tag } from 'Models/tag/Tag';
+import { Document, Segment } from 'Models/document/document';
+import { TreeContent, TreeFile, TreeNode } from 'Models/tree/Tree';
+import { ColorizedNode, ColorizedTree } from 'Models/tree/ColorizedTree';
+import { TreeService } from 'Services/tree/Tree';
+import { isFulfilled } from 'q';
+import { DialogService } from 'Services/userfeedback/DialogService';
+import { DocumentService } from 'Services/document/DocumentService';
 
 @Component({
   selector: "custom-textarea",
-  templateUrl: "./customtextarea.component.html",
-  styleUrls: ["./customtextarea.component.scss"]
+  templateUrl: './customtextarea.component.html',
+  styleUrls: ['./customtextarea.component.scss']
 })
 export class CustomTextareaComponent implements OnInit {
-  @ViewChild("editorInner") editor: ElementRef;
-  @ViewChild("ftcContainer") ftcContainer: ElementRef;
-
-  private lastMouseDown: number = -1;
-  private isUserSelectingText: boolean = false;
-
-  private lastSelection: Range;
-  private lastSelectionTime: number = -1;
-  //constructor(private tagService: TagService) {}
-  private componentFactory: ComponentFactory<TagComponent>;
-  private ftcPortalHost: DomPortalHost;
-
-  private document : Document;
-  private tree : TreeFile;
-  private lastSegmentId = 0;
 
 
   constructor(
@@ -71,13 +56,92 @@ export class CustomTextareaComponent implements OnInit {
   ) {
     this.componentFactory = this.resolver.resolveComponentFactory(TagComponent);
   }
+  @ViewChild('editorInner') editor: ElementRef;
+  @ViewChild('ftcContainer') ftcContainer: ElementRef;
+
+  private lastMouseDown = -1;
+  private isUserSelectingText = false;
+
+  private lastSelection: Range;
+  private lastSelectionTime = -1;
+  // constructor(private tagService: TagService) {}
+  private componentFactory: ComponentFactory<TagComponent>;
+  private ftcPortalHost: DomPortalHost;
+
+  private document: Document;
+  private tree: TreeFile;
+  private lastSegmentId = 0;
+
+  public static removeFeaturesFromSegmentID(id: number, documentService: DocumentService, document: Document) {
+    const docs: Document[] = documentService.loadDocuments();
+    document.body.segments = this.recursiveFeatuersRemoval(document.body.segments, id);
+    docs[document.header.id] = document;
+    documentService.storeDocuments(docs);
+  }
+
+  private static recursiveFeatuersRemoval(segments: Segment[], id: number): Segment[] {
+    if (segments.length == 0) {
+      return [];
+    }
+
+    for (const s of segments) {
+      if (s.id == id) {
+        s.features = [];
+        return segments;
+      }
+      if (s.children != null && s.children != []) {
+        s.children = this.recursiveFeatuersRemoval(s.children, id);
+      }
+    }
+    return segments;
+  }
+
+  private static findSegmentById(segments: Segment[], id: number): Segment {
+    if (segments.length == 0) {
+      return null;
+    }
+
+    for (const s of segments) {
+      if (s.id == id) {
+        return s;
+      }
+
+      const cfind = this.findSegmentById(s.children, id);
+      if (cfind != null) {
+        return cfind;
+      }
+    }
+
+    return null;
+  }
+
+  private static replaceSegmentInDocument(doc: Document, segment: Segment, id: number ): Document {
+    doc.body.segments = this.recursiveReplaceSegments(doc.body.segments, segment, id);
+    return doc;
+  }
+
+  private static recursiveReplaceSegments(segments: Segment[], segment: Segment, id: number): Segment[] {
+    for (let i = 0; i < segments.length; i++) {
+      if (segments[i].id == id) {
+        segments[i] = segment;
+        break;
+      }
+      if (segments[i].children != null) {
+        let new_children =  this.recursiveReplaceSegments(segments[i].children, segment, id);
+        if (segments[i].children == new_children) {
+          break;
+        }
+      }
+    }
+    return segments;
+  }
 
   ngOnInit() { }
 
-  @HostListener("document:selectionchange", ["$event.target"])
+  @HostListener('document:selectionchange', ['$event.target'])
   selectionChanged(event: Event) {
-    let sel = document.getSelection().getRangeAt(0);
-    let element: HTMLElement = this.editor.nativeElement;
+    const sel = document.getSelection().getRangeAt(0);
+    const element: HTMLElement = this.editor.nativeElement;
 
     if (this.editor.nativeElement.contains(sel.startContainer)) {
       this.lastSelection = sel;
@@ -94,7 +158,7 @@ export class CustomTextareaComponent implements OnInit {
     }
   }
 
-  @HostListener("document:mouseup", ["$event"])
+  @HostListener('document:mouseup', ['$event'])
   mouseUp(event: MouseEvent) {
     // TODO: Handle Keyboard Selection (KEY UP?)
     if (this.editor.nativeElement.contains(event.target)) {
@@ -103,10 +167,10 @@ export class CustomTextareaComponent implements OnInit {
           this.isUserSelectingText = false;
 
           let posX = (event.offsetX + 20);
-          let posY = (event.pageY + 10);
+          const posY = (event.pageY + 10);
           // Bound Fix
 
-          let margin = 300;
+          const margin = 300;
 
           if (posX > window.innerWidth - margin) {
             posX = window.innerWidth - margin;
@@ -122,7 +186,7 @@ export class CustomTextareaComponent implements OnInit {
     }
   }
 
-  @HostListener("document:mousedown", ["$event.target"])
+  @HostListener('document:mousedown', ['$event.target'])
   mouseDown(target: HTMLElement) {
     if (this.editor.nativeElement.contains(target)) {
       this.isUserSelectingText = true;
@@ -155,9 +219,9 @@ export class CustomTextareaComponent implements OnInit {
       }
     }
 
-    let portal = new ComponentPortal(FloatingTagChooserComponent);
+    const portal = new ComponentPortal(FloatingTagChooserComponent);
 
-    let ref = this.ftcPortalHost.attachComponentPortal(portal);
+    const ref = this.ftcPortalHost.attachComponentPortal(portal);
     ref.instance.moveTo(x, y);
     ref.instance.tagSelection.subscribe(this.tagSelectionHandler.bind(this));
   }
@@ -173,30 +237,30 @@ export class CustomTextareaComponent implements OnInit {
 
     if (node.nodeType == Node.TEXT_NODE) {
       // Split
-      let text = node.textContent;
+      const text = node.textContent;
       let span_container;
 
       let element_container;
       let content: Node;
 
-      let selectionContainer = document.createElement("div");
-      selectionContainer.style.display = "inline-block";
+      const selectionContainer = document.createElement('div');
+      selectionContainer.style.display = 'inline-block';
 
       debugger;
 
       if (this.lastSelection.startContainer == this.lastSelection.endContainer) {
         // Same container, 3 spans!
-        span_container = document.createElement("span");
-        let text1 = text.substr(0, this.lastSelection.startOffset);
-        let text2 = text.substr(
+        span_container = document.createElement('span');
+        const text1 = text.substr(0, this.lastSelection.startOffset);
+        const text2 = text.substr(
           this.lastSelection.startOffset,
           this.lastSelection.endOffset - this.lastSelection.startOffset
         );
-        let text3 = text.substr(this.lastSelection.endOffset);
+        const text3 = text.substr(this.lastSelection.endOffset);
 
-        let t1_span = document.createElement("span");
-        let t2_span = document.createElement("span");
-        let t3_span = document.createElement("span");
+        let t1_span = document.createElement('span');
+        let t2_span = document.createElement('span');
+        let t3_span = document.createElement('span');
 
         t1_span.textContent = text1;
         t2_span.textContent = text2;
@@ -210,49 +274,49 @@ export class CustomTextareaComponent implements OnInit {
         content = t2_span;
       } else {
         // Multi line selection
-        span_container = document.createElement("div");
+        span_container = document.createElement('div');
 
         // Start container
-        let sc = this.lastSelection.startContainer;
-        let ec = this.lastSelection.endContainer;
+        const sc = this.lastSelection.startContainer;
+        const ec = this.lastSelection.endContainer;
 
         let span_t = sc.textContent.substr(0, this.lastSelection.startOffset);
-        let span = document.createElement("span");
+        const span = document.createElement('span');
         span.textContent = span_t;
 
-        let frag = this.lastSelection.extractContents();
+        const frag = this.lastSelection.extractContents();
 
         node.parentNode.insertBefore(span, node);
         element_container = span_container;
         content = frag;
       }
 
-      span_container.className = "segment-container";
+      span_container.className = 'segment-container';
 
       this.lastSegmentId++;
-      span_container.setAttribute("data-segment-id", this.lastSegmentId.toString());
+      span_container.setAttribute('data-segment-id', this.lastSegmentId.toString());
 
       node.parentNode.replaceChild(span_container, node);
 
       node = span_container;
 
 
-      let portal = new ComponentPortal(TagComponent);
-      let portalHost = new DomPortalHost(
+      const portal = new ComponentPortal(TagComponent);
+      const portalHost = new DomPortalHost(
         element_container,
         this.resolver,
         this.appRef,
         this.injector
       );
 
-      let ref = portalHost.attachComponentPortal(portal);
+      const ref = portalHost.attachComponentPortal(portal);
 
-      let element: ComponentRef<TagComponent> = ref;
+      const element: ComponentRef<TagComponent> = ref;
       element.instance.setContent(content);
       element.instance.setTag(tag);
       element.instance.setDocument(this.document);
 
-      let whatevs = this.addSegToStructure(span_container,
+      const whatevs = this.addSegToStructure(span_container,
         sel_so,
         sel_eo,
         sel_sc,
@@ -262,46 +326,46 @@ export class CustomTextareaComponent implements OnInit {
 
     } else {
       console.warn(
-        "Node isn't Node.TEXT_NODE. Got " + node.nodeType + " instead."
+        'Node isn\'t Node.TEXT_NODE. Got ' + node.nodeType + ' instead.'
       );
     }
   }
 
-  private getNewIdFromSegmentArray(segments : Segment[], currentID : number) : number{
-    let id : number = currentID;
+  private getNewIdFromSegmentArray(segments: Segment[], currentID: number): number {
+    let id: number = currentID;
     segments.forEach((v, i, a) => {
-       if(v.id > id){
+       if (v.id > id) {
         id = v.id;
        }
-       if(v.children != null){
-          let innerID :number = this.getNewIdFromSegmentArray(v.children, id); 
+       if (v.children != null) {
+          const innerID: number = this.getNewIdFromSegmentArray(v.children, id);
        }
     });
     return id + 1;
   }
 
-  private addSegToStructure(span_container : HTMLElement,
-      startOffset: number,
-      endOffset: number,
-      startContainer: Node,
-      endContainer: Node,
-      tag : Tag) : any {
+  private addSegToStructure(span_container: HTMLElement,
+                            startOffset: number,
+                            endOffset: number,
+                            startContainer: Node,
+                            endContainer: Node,
+                            tag: Tag): any {
 
-      let documents = this.documentService.loadDocuments();
-      let id = this.document.header.id;
-      let actualDoc : Document = this.document;
-      
-      let tagText = "";
-      let inners : any = span_container.getElementsByClassName("tag-inner");
-      inners = inners[0]; 
-      let tagInner : HTMLElement = inners; 
-      
-      tagInner.childNodes.forEach((v, k, p)=> {
-        if(v.nodeType == Node.TEXT_NODE){
+      const documents = this.documentService.loadDocuments();
+      const id = this.document.header.id;
+      let actualDoc: Document = this.document;
+
+      let tagText = '';
+      let inners: any = span_container.getElementsByClassName('tag-inner');
+      inners = inners[0];
+      const tagInner: HTMLElement = inners;
+
+      tagInner.childNodes.forEach((v, k, p) => {
+        if (v.nodeType == Node.TEXT_NODE) {
           tagText += v.textContent;
         } else {
-          let e : HTMLElement = (<HTMLElement> v);
-          if(e.tagName == 'BR'){
+          const e: HTMLElement = (v as HTMLElement);
+          if (e.tagName == 'BR') {
             tagText += '\n';
             return;
           }
@@ -311,21 +375,21 @@ export class CustomTextareaComponent implements OnInit {
 
 
       this.lastSegmentId++;
-      let segment : Segment = {
+      let segment: Segment = {
         features : tag.features,
-        state : "active",
+        state : 'active',
         id: this.lastSegmentId,
         children : [],
         text : tagText
-      }
+      };
 
       //
       let node = span_container;
-      while(node.parentElement.getAttribute("data-segment-id") == ""){
+      while (node.parentElement.getAttribute('data-segment-id') == '') {
         node = node.parentElement;
-      } 
-      let segmentID = Number.parseInt(node.parentElement.getAttribute("data-segment-id"));
-      
+      }
+      const segmentID = Number.parseInt(node.parentElement.getAttribute('data-segment-id'), 10);
+
       this.lastSegmentId++;
       segment = this.addSegmentIntoText(
         CustomTextareaComponent.findSegmentById(this.document.body.segments, segmentID),
@@ -340,142 +404,86 @@ export class CustomTextareaComponent implements OnInit {
       documents[id] = actualDoc;
 
       this.documentService.storeDocuments(documents);
-    return true;
+      return true;
   }
 
-  public static removeFeaturesFromSegmentID(id : number, documentService : DocumentService, document : Document){
-    let docs : Document[] = documentService.loadDocuments();
-    document.body.segments = this.recursiveFeatuersRemoval(document.body.segments, id);
-    docs[document.header.id] = document;
-    documentService.storeDocuments(docs);
-  }
-
-  private static recursiveFeatuersRemoval(segments : Segment[], id : number) : Segment[]{
-    if(segments.length == 0){
-      return [];
-    }
-
-    for(let s of segments){
-      if(s.id == id){
-        s.features = [];
-        return segments;
-      }
-      if(s.children != null && s.children != []){
-        s.children = this.recursiveFeatuersRemoval(s.children, id);
-      }
-    }
-    return segments;
-  }
-
-  private static findSegmentById(segments: Segment[], id : number) : Segment {
-    if(segments.length == 0){
-      return null;
-    }
-
-    for(let s of segments){
-      if(s.id == id){
-        return s;
-      }
-
-      let cfind = this.findSegmentById(s.children, id);
-      if(cfind != null){
-        return cfind;
-      }
-    }
-
-    return null;
-  }
-
-  private static replaceSegmentInDocument(doc : Document, segment : Segment, id : number ) : Document{
-    doc.body.segments = this.recursiveReplaceSegments(doc.body.segments, segment, id);
-    return doc;
-  }
-
-  private static recursiveReplaceSegments(segments : Segment[], segment : Segment, id : number) : Segment[]{
-    for(let i = 0; i < segments.length; i++){
-      if(segments[i].id == id){
-        segments[i] = segment;
-        break;
-      }
-      if(segments[i].children != null){
-        let new_children =  this.recursiveReplaceSegments(segments[i].children, segment, id);
-        if(segments[i].children == new_children)
-          break;
-      }
-    }
-    return segments;
-  }
-
-  private addSegmentIntoText(segmentParent : Segment, offsetStart: number, offsetEnd: number, nextID : number, segment : Segment, span_container : Node) : Segment{
+  private addSegmentIntoText(
+    segmentParent: Segment,
+    offsetStart: number,
+    offsetEnd: number,
+    nextID: number,
+    segment: Segment,
+    span_container: Node): Segment {
     let parent_childNodes = span_container.parentElement.childNodes;
     let offs = 0;
     let i = 0;
-    for(i=0; i < parent_childNodes.length; i++){
-      let child = <HTMLElement> parent_childNodes[i];
-      if(child == span_container){
+    for (i = 0; i < parent_childNodes.length; i++) {
+      const child = parent_childNodes[i] as HTMLElement;
+      if (child == span_container) {
         break;
       }
-      if(child.tagName == 'BR'){
+      if (child.tagName == 'BR') {
         offs++;
       }
 
-      if(child.innerText != undefined){
+      if (child.innerText != undefined) {
         offs += child.innerText.length;
       } else {
         offs += child.textContent.length;
       }
     }
-    
+
     offsetStart += offs;
     offsetEnd += offs;
-    let before = segmentParent.text.substring(0, offsetStart);
-    //let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
-    let end = segmentParent.text.substring(segment.text.length + offsetStart, segmentParent.text.length);
+    const before = segmentParent.text.substring(0, offsetStart);
+    // let middle = segmentParent.text.substr(offsetStart, offsetEnd - offsetStart);
+    const end = segmentParent.text.substring(segment.text.length + offsetStart, segmentParent.text.length);
 
     debugger;
 
-    let segBefore : Segment= {
+    const segBefore: Segment = {
       children : [],
       id : nextID,
       text: before,
-      state : "active",
+      state : 'active',
       features : []
     };
 
-    let segAfter : Segment = {
+    const segAfter: Segment = {
       children : [],
-      id : nextID+1,
+      id : nextID + 1,
       text : end,
-      state : "active",
+      state : 'active',
       features : []
-    }
+    };
     segmentParent.children.push(segBefore, segment, segAfter);
-    segmentParent.text = "";
+    segmentParent.text = '';
     return segmentParent;
   }
 
-  private findSegmentByText(segments : Segment[], text : string) : Segment{
-    let seg : Segment = null;
+  private findSegmentByText(segments: Segment[], text: string): Segment {
+    let seg: Segment = null;
     segments.forEach((v, i, a) => {
-      if(v.text.indexOf(text) != -1){
+      if (v.text.indexOf(text) != -1) {
         seg = v;
       }
-      if(v.children.length == 0){
-        let childSeg : Segment = this.findSegmentByText(v.children, text);
-        if(childSeg != null)
+      if (v.children.length == 0) {
+        const childSeg: Segment = this.findSegmentByText(v.children, text);
+        if (childSeg != null) {
           seg = childSeg;
+        }
       }
    });
     return seg;
   }
 
-  private findTagByFeatures2(n: ColorizedNode, originalFeatures: string[], features: string[]) : Tag {
-    if(originalFeatures.length == 0){
+  private findTagByFeatures2(n: ColorizedNode, originalFeatures: string[], features: string[]): Tag {
+    if (originalFeatures.length == 0) {
       return null;
     }
-    
-    if(features.length == 0){
-      console.log("Features is 0 !");
+
+    if (features.length == 0) {
+      console.log('Features is 0 !');
       return {
         color: n.color,
         features: originalFeatures,
@@ -484,7 +492,7 @@ export class CustomTextareaComponent implements OnInit {
     }
 
     if (features.length == 1 && originalFeatures.length != 0) {
-      if(n.name == features[0]){
+      if (n.name == features[0]) {
         return {
           color: n.color,
           features: originalFeatures,
@@ -492,12 +500,12 @@ export class CustomTextareaComponent implements OnInit {
         };
       }
     }
-    
+
     if (n.name.toUpperCase() == n.name) {
 
       // Looks like a -TYPE node, skip it
-      let node = null;
-      for (let c of n.children) {
+      const node = null;
+      for (const c of n.children) {
         if (c.name == features[0]) {
           return this.findTagByFeatures2(c, originalFeatures, features);
         }
@@ -513,9 +521,9 @@ export class CustomTextareaComponent implements OnInit {
     }
 
     if (n.children != null) {
-      for (let c of n.children) {
+      for (const c of n.children) {
         let new_feats = features.slice(0);
-        let lastN = this.findTagByFeatures2(c, originalFeatures, new_feats.splice(1));
+        const lastN = this.findTagByFeatures2(c, originalFeatures, new_feats.splice(1));
         if (lastN != null) {
           return lastN;
         }
@@ -524,7 +532,7 @@ export class CustomTextareaComponent implements OnInit {
   }
 
   private findTagByFeatures(n: ColorizedNode, features: string[]): Tag {
-    console.log("findTagByFeatures", n.children, features);
+    console.log('findTagByFeatures', n.children, features);
     return this.findTagByFeatures2(n, features, features.slice(0));
   }
 
@@ -533,9 +541,9 @@ export class CustomTextareaComponent implements OnInit {
     this.tree = t;
 
     if (t == null) {
-      console.error("Cannot load a document without a corresponding TreeFile");
-      this.dialogService.error("Unable to open this document",
-        "In order to open this document, you need to select / upload a tree first!");
+      console.error('Cannot load a document without a corresponding TreeFile');
+      this.dialogService.error('Unable to open this document',
+        'In order to open this document, you need to select / upload a tree first!');
       return;
     }
 
@@ -544,54 +552,54 @@ export class CustomTextareaComponent implements OnInit {
       return;
     }
 
-    let ct = this.treeService.colorizeTree(t.data.root)[0];
+    const ct = this.treeService.colorizeTree(t.data.root)[0];
 
-    let el: HTMLElement = this.editor.nativeElement;
+    const el: HTMLElement = this.editor.nativeElement;
 
-    for (let s of d.body.segments) {
+    for (const s of d.body.segments) {
       this.parseSegment(ct, el, s);
     }
   }
 
-  parseSegment(ct : ColorizedNode, el: HTMLElement, s: Segment){
-    let divSegment = document.createElement('div');
-    divSegment.className = "segment-container";
-    divSegment.setAttribute("data-segment-id", s.id.toString())
-    
+  parseSegment(ct: ColorizedNode, el: HTMLElement, s: Segment) {
+    const divSegment = document.createElement('div');
+    divSegment.className = 'segment-container';
+    divSegment.setAttribute('data-segment-id', s.id.toString());
+
     this.lastSegmentId = Math.max(this.lastSegmentId, s.id);
     let content;
-    if(s.children.length == 0){
+    if (s.children.length == 0) {
       content = document.createElement('span');
       content.innerText = s.text;
     } else {
       content = document.createElement('div');
       content.className = 'segment-container';
 
-      for (let segment of s.children) {
+      for (const segment of s.children) {
         this.parseSegment(ct, content, segment);
       }
     }
 
-    let portal = new ComponentPortal(TagComponent);
-    let portalHost = new DomPortalHost(
+    const portal = new ComponentPortal(TagComponent);
+    const portalHost = new DomPortalHost(
       divSegment,
       this.resolver,
       this.appRef,
       this.injector
     );
 
-    let ref = portalHost.attachComponentPortal(portal);
-    let tag = this.findTagByFeatures(ct, s.features);
+    const ref = portalHost.attachComponentPortal(portal);
+    const tag = this.findTagByFeatures(ct, s.features);
 
     if (tag == null) {
-      content.setAttribute("data-segment-id", s.id.toString());
+      content.setAttribute('data-segment-id', s.id.toString());
       el.appendChild(content);
       return;
     }
 
-    console.log("Setting tag to ", tag);
+    console.log('Setting tag to ', tag);
 
-    let element: ComponentRef<TagComponent> = ref;
+    const element: ComponentRef<TagComponent> = ref;
     element.instance.setContent(content);
     element.instance.setTag(tag);
     element.instance.setDocument(this.document);
